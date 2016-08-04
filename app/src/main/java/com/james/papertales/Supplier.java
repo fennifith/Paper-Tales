@@ -8,10 +8,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 
 import com.james.papertales.data.AuthorData;
 import com.james.papertales.data.HeaderListData;
+import com.james.papertales.data.TextListData;
 import com.james.papertales.data.WallData;
 import com.james.papertales.utils.ElementUtils;
 
@@ -54,12 +56,12 @@ public class Supplier extends Application {
                 document = ElementUtils.getDocument(new URL(urls[i]));
                 if (document == null) continue;
 
-                AuthorData author = new AuthorData(document.title(), ElementUtils.getIcon(document), "", i, ElementUtils.getUrl(document), urls[i]);
+                AuthorData author = new AuthorData(document.title(), ElementUtils.getIcon(document), ElementUtils.getDescription(document), i, ElementUtils.getUrl(document), urls[i]);
                 authors.add(author);
 
                 Elements elements = document.select("item");
                 for (Element element : elements) {
-                    WallData data = new WallData(ElementUtils.getName(element), ElementUtils.getDescription(element), ElementUtils.getImages(element), author.name, author.id);
+                    WallData data = new WallData(ElementUtils.getName(element), ElementUtils.getDescription(element), ElementUtils.getDate(element), ElementUtils.getLink(element), ElementUtils.getImages(element), ElementUtils.getCategories(element), author.name, author.id);
                     wallpapers[0].add(data);
                 }
                 // etc
@@ -100,7 +102,7 @@ public class Supplier extends Application {
     //additional info to put in the about section
     public ArrayList<HeaderListData> getAdditionalInfo() {
         ArrayList<HeaderListData> headers = new ArrayList<>();
-
+        headers.add(new HeaderListData(null, getResources().getString(R.string.alex), true, "https://github.com/cadialex"));
         return headers;
     }
 

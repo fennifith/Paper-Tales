@@ -15,13 +15,16 @@
     <string name="title_about">About</string>
     <string name="title_search">Search</string>
 
+    <string name="action_view_in_browser">View in Browser</string>
+    <string name="action_fullscreen">Fullscreen</string>
+
     <string name="featured">Featured</string>
     <string name="all">All</string>
 
     <!-- Toast messages -->
-    <string name="set_wallpaper_success">Wallpaper set :)</string>
-    <string name="set_wallpaper_failed">Wallpaper not set :(</string>
-    <string name="download_failed">Download failed :(</string>
+    <string name="set_wallpaper_success">Wallpaper set (ง ͠° ͟ل͜ ͡°)ง</string>
+    <string name="set_wallpaper_failed">Wallpaper not set ( ͡° ʖ̯ ͡°)</string>
+    <string name="download_failed">Download failed ( ͡° ʖ̯ ͡°)</string>
 
     <!-- Dialogs -->
     <string name="credit_required">Credit Required</string>
@@ -33,51 +36,32 @@
     <!-- Specify whether to show the contributors in the about section -->
     <bool name="show_contributors">true</bool>
 
-    <string name="contributors">Contributors:</string>
-
-    <!-- Names for the different sections -->
-    <string-array name="people_names" formatted="false">
-        <item>Žan Černe</item>
-    </string-array>
-
-    <!-- Icons for the different sections -->
-    <string-array name="people_icons" formatted="false">
-        <item>http://justinkruit.nl/stuff/jamesfenn/fornax/zan_cerne/profile.png</item>
-    </string-array>
-
-    <!-- Descriptions for the different sections -->
-    <string-array name="people_descs" formatted="false">
-        <item>An enthusiastic material-design lover from Slovenia. He posts wallpapers, icons, and more to his blog, as well as designing image resources for a variety of applications.</item>
-    </string-array>
-
-    <!-- Urls for the different sections (optional) -->
-    <string-array name="people_urls" formatted="false">
-        <item>https://zheanoblog.eu/about/</item>
-    </string-array>
+    <string name="contributors">Sources:</string>
 
     <string-array name="people_wps">
         <item>https://zheanoblog.eu/feed/</item>
+        <item>http://blog.karachicorner.com/feed/</item>
+        <item>http://blog.chaqula.com/feed/</item>
     </string-array>
+
+    <string name="alex">Special thanks to Alexandre Piveteau for providing the code used for the page indicators.</string>
 
     <!-- Don't edit these, credit is needed for the libraries -->
     <string name="libraries">Implemented Libraries:</string>
 
     <array name="namey" formatted="false">
-        <item>MaterialTutorial - Alexandre Piveteau</item>
         <item>MaterialDrawer - Mike Penz</item>
         <item>Glide - Bumptech</item>
         <item>Jsoup - Jonathan Hedley</item>
     </array>
 
     <array name="desc" formatted="false">
-        <item>An Android library that provides a simple Material-Designed tutorial.</item>
         <item>The MaterialDrawer library aims to provide the easiest possible implementation of a navigation drawer for your application.</item>
         <item>An image loading and caching library for Android focused on smooth scrolling.</item>
         <item>A Java HTML parser that makes sense of real-world HTML soup.</item>
     </array>
 
     <string-array name="uri" formatted="false">
-        <item>https://github.com/cadialex/MaterialTutorial</item>
         <item>https://github.com/mikepenz/MaterialDrawer</item>
         <item>https://github.com/bumptech/glide</item>
         <item>https://github.com/jhy/jsoup</item>

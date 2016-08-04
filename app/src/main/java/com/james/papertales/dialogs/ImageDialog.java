@@ -1,6 +1,7 @@
-package com.james.papertales.fragments;
+package com.james.papertales.dialogs;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.DownloadManager;
 import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
@@ -11,13 +12,10 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.view.LayoutInflater;
+import android.support.v7.app.AppCompatDialog;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -26,58 +24,62 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.james.papertales.R;
 import com.james.papertales.Supplier;
-import com.james.papertales.utils.ImageUtils;
 import com.james.papertales.data.WallData;
+import com.james.papertales.utils.ImageUtils;
 import com.james.papertales.views.CustomImageView;
 
 import java.io.IOException;
 
-public class ImageFragment extends Fragment {
+public class ImageDialog extends AppCompatDialog {
 
-    WallData data;
-    int position;
-    View download, share, apply;
+    private Activity activity;
+    private Supplier supplier;
+    private DownloadReceiver downloadReceiver;
 
-    Supplier supplier;
-    DownloadReceiver downloadReceiver;
+    private String url;
+    private WallData data;
 
-    @Nullable
+    private CustomImageView image;
+
+    public ImageDialog(Activity activity) {
+        super(activity, R.style.AppTheme_Dialog);
+        this.activity = activity;
+        supplier = (Supplier) activity.getApplicationContext();
+    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_image, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.layout_image);
 
-        supplier = (Supplier) getContext().getApplicationContext();
+        image = (CustomImageView) findViewById(R.id.image);
 
-        data = getArguments().getParcelable("data");
-        position = getArguments().getInt("position", 0);
-
-        download = v.findViewById(R.id.download);
-        share = v.findViewById(R.id.share);
-        apply = v.findViewById(R.id.apply);
-
-        download.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.download).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (data == null || url == null) return;
+
                 downloadReceiver.register();
 
                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-                    supplier.downloadWallpaper(getContext(), data.name, data.images.get(position));
+                    supplier.downloadWallpaper(getContext(), data.name, url);
                 else
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 8027);
+                    ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 8027);
             }
         });
 
-        share.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.share).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                supplier.shareWallpaper(getContext(), data.images.get(position));
+                if (url != null) supplier.shareWallpaper(getContext(), url);
             }
         });
 
-        apply.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.apply).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Glide.with(getActivity()).load(data.images.get(position)).into(new SimpleTarget<GlideDrawable>() {
+                if (url == null) return;
+                Glide.with(activity).load(url).into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.SET_WALLPAPER) == PackageManager.PERMISSION_GRANTED) {
@@ -89,7 +91,7 @@ public class ImageFragment extends Fragment {
                                 Toast.makeText(getContext(), R.string.set_wallpaper_failed, Toast.LENGTH_SHORT).show();
                             }
                         } else
-                            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.SET_WALLPAPER}, 9274);
+                            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.SET_WALLPAPER}, 9274);
                     }
 
                     @Override
@@ -101,17 +103,18 @@ public class ImageFragment extends Fragment {
             }
         });
 
-        Glide.with(getContext()).load(data.images.get(position)).into((CustomImageView) v.findViewById(R.id.image));
-
-        setClickable(false);
-
-        return v;
+        if (url != null) Glide.with(getContext()).load(url).into(image);
     }
 
-    private void setClickable(boolean clickable) {
-        if (download != null) download.setClickable(clickable);
-        if (share != null) share.setClickable(clickable);
-        if (apply != null) apply.setClickable(clickable);
+    public ImageDialog setImage(String url) {
+        this.url = url;
+        if (image != null) Glide.with(getContext()).load(url).into(image);
+        return this;
+    }
+
+    public ImageDialog setWallpaper(WallData data) {
+        this.data = data;
+        return this;
     }
 
     @Override

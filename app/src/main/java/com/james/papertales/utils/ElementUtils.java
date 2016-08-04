@@ -1,7 +1,6 @@
 package com.james.papertales.utils;
 
 import android.support.annotation.Nullable;
-import android.text.Html;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -82,12 +81,19 @@ public class ElementUtils {
         }
     }
 
+    public static String getDescription(Document document) {
+        Elements elements = document.select("description");
+        if (elements.size() > 0) return elements.get(0).text();
+        else return "";
+    }
+
     public static String getIcon(Document document) {
         Elements elements = document.select("image");
         if (elements.size() > 0) {
             Elements images = elements.select("url");
             String src = images.get(0).text();
-            return src.substring(0, src.indexOf("?"));
+            if (src.contains("?")) src = src.substring(0, src.indexOf("?"));
+            return src;
         }
         else return "";
     }
@@ -95,7 +101,7 @@ public class ElementUtils {
     public static String getUrl(Document document) {
         Elements elements = document.select("link");
         if (elements.size() > 0) return elements.get(0).text();
-        else return null;
+        else return "";
     }
 
     public static String getName(Element item) {
@@ -110,8 +116,28 @@ public class ElementUtils {
             Document document = Jsoup.parse(elements.get(0).text());
             document.select("img").remove();
             return document.text();
+        } else {
+            elements = item.select("description");
+            if (elements.size() > 0) {
+                return elements.get(0).text();
+            } else return "";
         }
-        else return "";
+    }
+
+    public static String getDate(Element item) {
+        Elements elements = item.select("pubDate");
+        if (elements.size() > 0) return elements.get(0).text();
+        else return null;
+    }
+
+    public static String getLink(Element item) {
+        Elements elements = item.select("link");
+        if (elements.size() > 0) return elements.get(0).text();
+        else {
+            elements = item.select("guid");
+            if (elements.size() > 0) return elements.get(0).text();
+            else return null;
+        }
     }
 
     public static ArrayList<String> getImages(Element item) {
@@ -121,11 +147,25 @@ public class ElementUtils {
         if (elements.size() > 0) {
             Document content = Jsoup.parse(elements.get(0).text());
             for (Element image : content.select("img")) {
+                if (!image.hasAttr("src")) continue;
+
                 String src = image.attr("src");
-                images.add(src.substring(0, src.indexOf("?")));
+                if (src.contains("?")) src = src.substring(0, src.indexOf("?"));
+                images.add(src);
             }
         }
 
         return images;
+    }
+
+    public static ArrayList<String> getCategories(Element item) {
+        ArrayList<String> categories = new ArrayList<>();
+
+        Elements elements = item.select("category");
+        for (Element element : elements) {
+            categories.add(element.text());
+        }
+
+        return categories;
     }
 }

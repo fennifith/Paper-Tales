@@ -21,7 +21,6 @@ import com.james.papertales.data.TextListData;
 
 import java.util.ArrayList;
 
-
 public class AboutActivity extends AppCompatActivity {
 
     Toolbar toolbar;
@@ -60,14 +59,8 @@ public class AboutActivity extends AppCompatActivity {
             items.add(new TextListData(headers[i], contents[i], new Intent(Intent.ACTION_VIEW, Uri.parse(urls[i]))));
         }
 
-        recycler.setLayoutManager(new GridLayoutManager(this, 1) );
+        recycler.setLayoutManager(new GridLayoutManager(this, 1));
         recycler.setAdapter(new AboutAdapter(this, items));
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_about, menu);
-        return true;
     }
 
     @Override

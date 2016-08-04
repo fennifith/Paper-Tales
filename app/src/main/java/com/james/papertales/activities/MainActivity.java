@@ -80,37 +80,41 @@ public class MainActivity extends AppCompatActivity {
                                 new ProfileDrawerItem().withName(getString(R.string.app_name)).withEmail("Version " + BuildConfig.VERSION_NAME).withIcon(ContextCompat.getDrawable(this, R.mipmap.wpicon))
                         )
                         .build())
-                .withSelectedItem(0)
                 .addDrawerItems(
-                        new SecondaryDrawerItem().withName(getString(R.string.title_home)).withIdentifier(-1).withIcon(R.drawable.ic_home),
-                        new SecondaryDrawerItem().withName(getString(R.string.title_favorites)).withIdentifier(-2).withIcon(R.drawable.ic_fav),
+                        new SecondaryDrawerItem().withName(getString(R.string.title_home)).withIdentifier(items.length + 1).withIcon(R.drawable.ic_home),
+                        new SecondaryDrawerItem().withName(getString(R.string.title_favorites)).withIdentifier(items.length + 2).withIcon(R.drawable.ic_fav),
                         new DividerDrawerItem()
                 )
                 .addDrawerItems(items)
                 .addDrawerItems(
                         new DividerDrawerItem(),
-                        new SecondaryDrawerItem().withName(getString(R.string.title_about)).withIdentifier(-3).withSelectable(false).withIcon(R.drawable.ic_info)
+                        new SecondaryDrawerItem().withName(getString(R.string.title_about)).withIdentifier(items.length + 3).withSelectable(false).withIcon(R.drawable.ic_info)
                 )
+                .withSelectedItem(items.length + 1)
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        switch ((int) drawerItem.getIdentifier()) {
-                            case -1:
-                                fragment = new HomeFragment();
-                                toolbar.setTitle(getString(R.string.title_home));
-                                break;
-                            case -2:
-                                fragment = new FavFragment();
-                                toolbar.setTitle(getString(R.string.title_favorites));
-                                break;
-                            case -3:
-                                startActivity(new Intent(MainActivity.this, AboutActivity.class));
-                                break;
-                            default:
-                                Bundle args = new Bundle();
-                                args.putInt("authorId", (int) drawerItem.getIdentifier());
-                                fragment = new ListFragment();
-                                fragment.setArguments(args);
+                        int max = supplier.getAuthors().size(), id = (int) drawerItem.getIdentifier();
+
+                        if (id > max) {
+                            switch (id - max) {
+                                case 1:
+                                    fragment = new HomeFragment();
+                                    toolbar.setTitle(getString(R.string.title_home));
+                                    break;
+                                case 2:
+                                    fragment = new FavFragment();
+                                    toolbar.setTitle(getString(R.string.title_favorites));
+                                    break;
+                                case 3:
+                                    startActivity(new Intent(MainActivity.this, AboutActivity.class));
+                                    break;
+                            }
+                        } else {
+                            Bundle args = new Bundle();
+                            args.putInt("authorId", id);
+                            fragment = new ListFragment();
+                            fragment.setArguments(args);
                         }
 
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragment).commit();

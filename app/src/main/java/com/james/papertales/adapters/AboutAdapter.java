@@ -112,7 +112,6 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
             case 2:
                 PersonListData personData = (PersonListData) itemList.get(position);
 
-                Glide.with(activity).load(personData.icon).into((ImageView) holder.v.findViewById(R.id.profile));
                 ((TextView) holder.v.findViewById(R.id.header)).setText(personData.name);
                 ((TextView) holder.v.findViewById(R.id.content)).setText(personData.content);
 

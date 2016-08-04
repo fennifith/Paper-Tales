@@ -10,16 +10,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.google.android.flexbox.FlexboxLayout;
 import com.james.papertales.R;
 import com.james.papertales.Supplier;
 import com.james.papertales.adapters.ImagePagerAdapter;
+import com.james.papertales.data.AuthorData;
 import com.james.papertales.data.WallData;
 import com.james.papertales.utils.ImageUtils;
 import com.james.papertales.views.CustomImageView;
+import com.james.papertales.views.PageIndicator;
 
 
 public class WallActivity extends AppCompatActivity {
@@ -29,8 +33,10 @@ public class WallActivity extends AppCompatActivity {
 
     Toolbar toolbar;
     ViewPager viewPager;
-    TextView name, auth, desc;
-    LinearLayout bg;
+    PageIndicator indicator;
+
+    TextView date, auth, desc;
+    FlexboxLayout categories;
     CustomImageView fav;
 
     SharedPreferences prefs;
@@ -48,21 +54,36 @@ public class WallActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
-        name = (TextView) findViewById(R.id.wall);
+        indicator = (PageIndicator) findViewById(R.id.indicator);
+        date = (TextView) findViewById(R.id.date);
         auth = (TextView) findViewById(R.id.auth);
         desc = (TextView) findViewById(R.id.description);
-        bg = (LinearLayout) findViewById(R.id.back);
+        categories = (FlexboxLayout) findViewById(R.id.categories);
         fav = (CustomImageView) findViewById(R.id.fav);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        viewPager.setAdapter(new ImagePagerAdapter(data, getSupportFragmentManager()));
+        viewPager.setAdapter(new ImagePagerAdapter(this, data));
+        indicator.setViewPager(viewPager);
 
-        name.setText(getTitle());
+        if (data.categories.size() > 0) {
+            categories.setVisibility(View.VISIBLE);
+
+            for (String category : data.categories) {
+                View v = LayoutInflater.from(this).inflate(R.layout.layout_category, null);
+                ((TextView) v.findViewById(R.id.title)).setText(category);
+                categories.addView(v);
+            }
+        }
+
+        date.setText(data.date);
         auth.setText(data.authorName);
         desc.setText(Html.fromHtml(data.desc));
         desc.setMovementMethod(new LinkMovementMethod());
+
+        AuthorData author = supplier.getAuthor(data.authorId);
+        if (author != null) Glide.with(this).load(author.image).into((CustomImageView) findViewById(R.id.profile));
 
         findViewById(R.id.person).setOnClickListener(new View.OnClickListener() {
             @Override
