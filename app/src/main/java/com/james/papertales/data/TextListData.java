@@ -1,10 +1,7 @@
 package com.james.papertales.data;
 
-import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import java.net.URISyntaxException;
 
 public class TextListData implements Parcelable {
 
@@ -20,9 +17,9 @@ public class TextListData implements Parcelable {
 
     public String name;
     public String content;
-    public Intent primary;
+    public String primary;
 
-    public TextListData(String name, String content, Intent primary) {
+    public TextListData(String name, String content, String primary) {
         this.name = name;
         this.content = content;
         this.primary = primary;
@@ -35,18 +32,14 @@ public class TextListData implements Parcelable {
     private void ReadFromParcel(Parcel in) {
         name = in.readString();
         content = in.readString();
-        try {
-            primary = Intent.parseUri(in.readString(), 0);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        primary = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
         out.writeString(name);
         out.writeString(content);
-        out.writeString(primary.toUri(0));
+        out.writeString(primary);
     }
 
     @Override

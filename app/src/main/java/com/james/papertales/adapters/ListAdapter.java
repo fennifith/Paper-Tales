@@ -15,9 +15,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.james.papertales.R;
 import com.james.papertales.Supplier;
-import com.james.papertales.utils.ImageUtils;
 import com.james.papertales.activities.WallActivity;
 import com.james.papertales.data.WallData;
+import com.james.papertales.utils.ImageUtils;
 import com.james.papertales.views.CustomImageView;
 import com.james.papertales.views.SquareImageView;
 
@@ -65,7 +65,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
         ((TextView) holder.v.findViewById(R.id.title)).setText(walls.get(position).name);
 
-        holder.v.findViewById(R.id.card).setOnClickListener(new View.OnClickListener() {
+        holder.v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(activity, WallActivity.class);

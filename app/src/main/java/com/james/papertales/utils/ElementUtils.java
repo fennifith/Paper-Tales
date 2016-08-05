@@ -101,7 +101,7 @@ public class ElementUtils {
     public static String getUrl(Document document) {
         Elements elements = document.select("link");
         if (elements.size() > 0) return elements.get(0).text();
-        else return "";
+        else return "https://www.google.com/";
     }
 
     public static String getName(Element item) {
@@ -127,7 +127,7 @@ public class ElementUtils {
     public static String getDate(Element item) {
         Elements elements = item.select("pubDate");
         if (elements.size() > 0) return elements.get(0).text();
-        else return null;
+        else return "";
     }
 
     public static String getLink(Element item) {
@@ -136,7 +136,7 @@ public class ElementUtils {
         else {
             elements = item.select("guid");
             if (elements.size() > 0) return elements.get(0).text();
-            else return null;
+            else return "https://www.google.com/";
         }
     }
 

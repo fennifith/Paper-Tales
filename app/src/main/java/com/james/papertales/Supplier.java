@@ -7,13 +7,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 
 import com.james.papertales.data.AuthorData;
 import com.james.papertales.data.HeaderListData;
-import com.james.papertales.data.TextListData;
 import com.james.papertales.data.WallData;
 import com.james.papertales.utils.ElementUtils;
 
@@ -30,7 +30,7 @@ public class Supplier extends Application {
     private String[] urls;
 
     private ArrayList<AuthorData> authors;
-    private ArrayList<WallData>[] wallpapers;
+    private ArrayList<WallData> wallpapers;
 
     @Override
     public void onCreate() {
@@ -45,15 +45,11 @@ public class Supplier extends Application {
         //no, it is not needed for the current setup since all the resources are in res/values/strings.xml
 
         authors = new ArrayList<>();
-        wallpapers = new ArrayList[urls.length];
+        wallpapers = new ArrayList<>();
 
         for (int i = 0; i < urls.length; i++) {
-
-            wallpapers[i] = new ArrayList<>();
-
-            Document document;
             try {
-                document = ElementUtils.getDocument(new URL(urls[i]));
+                Document document = ElementUtils.getDocument(new URL(urls[i]));
                 if (document == null) continue;
 
                 AuthorData author = new AuthorData(document.title(), ElementUtils.getIcon(document), ElementUtils.getDescription(document), i, ElementUtils.getUrl(document), urls[i]);
@@ -62,7 +58,7 @@ public class Supplier extends Application {
                 Elements elements = document.select("item");
                 for (Element element : elements) {
                     WallData data = new WallData(ElementUtils.getName(element), ElementUtils.getDescription(element), ElementUtils.getDate(element), ElementUtils.getLink(element), ElementUtils.getImages(element), ElementUtils.getCategories(element), author.name, author.id);
-                    wallpapers[0].add(data);
+                    wallpapers.add(data);
                 }
                 // etc
             } catch (IOException e) {
@@ -87,16 +83,59 @@ public class Supplier extends Application {
     //get a list of the different wallpapers
     public ArrayList<WallData> getWallpapers() {
         ArrayList<WallData> walls = new ArrayList<>();
-
-        for (ArrayList<WallData> wallpapers : this.wallpapers) {
-            walls.addAll(wallpapers);
-        }
+        walls.addAll(wallpapers);
 
         return walls;
     }
 
     public ArrayList<WallData> getWallpapers(int authorId) {
-        return wallpapers[authorId];
+        ArrayList<WallData> walls = new ArrayList<>();
+
+        for (WallData wallpaper : wallpapers) {
+            if (wallpaper.authorId == authorId) walls.add(wallpaper);
+        }
+
+        return walls;
+    }
+
+    public void getWallpapers(final int id, final int page, final AsyncListener<ArrayList<WallData>> listener) {
+        if (id < 0 || id >= authors.size()) return;
+
+        new Thread() {
+            @Override
+            public void run() {
+                final ArrayList<WallData> walls = new ArrayList<>();
+
+                Document document;
+                try {
+                    document = ElementUtils.getDocument(new URL(urls[id] + "?paged=" + String.valueOf(page)));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.onFailure();
+                        }
+                    });
+                    return;
+                }
+
+                Elements elements = document.select("item");
+                for (Element element : elements) {
+                    WallData data = new WallData(ElementUtils.getName(element), ElementUtils.getDescription(element), ElementUtils.getDate(element), ElementUtils.getLink(element), ElementUtils.getImages(element), ElementUtils.getCategories(element), authors.get(id).name, id);
+                    walls.add(data);
+                }
+
+                wallpapers.addAll(walls);
+
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        listener.onTaskComplete(walls);
+                    }
+                });
+            }
+        }.start();
     }
 
     //additional info to put in the about section
@@ -136,5 +175,11 @@ public class Supplier extends Application {
         intent.setType("image/*");
         intent.putExtra(Intent.EXTRA_STREAM, String.valueOf(Uri.parse(url)));
         context.startActivity(intent);
+    }
+
+    public interface AsyncListener<E> {
+        void onTaskComplete(E value);
+
+        void onFailure();
     }
 }

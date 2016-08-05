@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -11,18 +12,18 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.google.android.flexbox.FlexboxLayout;
 import com.james.papertales.R;
 import com.james.papertales.Supplier;
 import com.james.papertales.adapters.ImagePagerAdapter;
-import com.james.papertales.data.AuthorData;
 import com.james.papertales.data.WallData;
+import com.james.papertales.dialogs.ImageDialog;
 import com.james.papertales.utils.ImageUtils;
-import com.james.papertales.views.CustomImageView;
 import com.james.papertales.views.PageIndicator;
 
 
@@ -35,9 +36,11 @@ public class WallActivity extends AppCompatActivity {
     ViewPager viewPager;
     PageIndicator indicator;
 
+    Handler handler;
+    Runnable runnable;
+
     TextView date, auth, desc;
     FlexboxLayout categories;
-    CustomImageView fav;
 
     SharedPreferences prefs;
 
@@ -59,7 +62,6 @@ public class WallActivity extends AppCompatActivity {
         auth = (TextView) findViewById(R.id.auth);
         desc = (TextView) findViewById(R.id.description);
         categories = (FlexboxLayout) findViewById(R.id.categories);
-        fav = (CustomImageView) findViewById(R.id.fav);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -67,12 +69,47 @@ public class WallActivity extends AppCompatActivity {
         viewPager.setAdapter(new ImagePagerAdapter(this, data));
         indicator.setViewPager(viewPager);
 
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                handler.removeCallbacks(runnable);
+                handler.postDelayed(runnable, 5000);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (viewPager.getCurrentItem() > viewPager.getChildCount())
+                    viewPager.setCurrentItem(0);
+                else viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+            }
+        };
+
+        handler = new Handler();
+        handler.postDelayed(runnable, 5000);
+
+        viewPager.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new ImageDialog(WallActivity.this).setImage(viewPager.getCurrentItem()).setWallpaper(data).show();
+            }
+        });
+
         if (data.categories.size() > 0) {
             categories.setVisibility(View.VISIBLE);
 
             for (String category : data.categories) {
                 View v = LayoutInflater.from(this).inflate(R.layout.layout_category, null);
-                ((TextView) v.findViewById(R.id.title)).setText(category);
+                ((TextView) v.findViewById(R.id.title)).setText(category.toLowerCase());
                 categories.addView(v);
             }
         }
@@ -82,24 +119,40 @@ public class WallActivity extends AppCompatActivity {
         desc.setText(Html.fromHtml(data.desc));
         desc.setMovementMethod(new LinkMovementMethod());
 
-        AuthorData author = supplier.getAuthor(data.authorId);
-        if (author != null) Glide.with(this).load(author.image).into((CustomImageView) findViewById(R.id.profile));
+        findViewById(R.id.launchPost).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(data.url)));
+            }
+        });
 
-        findViewById(R.id.person).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.launchAuthor).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(supplier.getAuthors().get(data.authorId).url)));
             }
         });
+    }
 
-        fav.setImageDrawable(ImageUtils.getVectorDrawable(this, prefs.getBoolean(data.name + data.authorId, false) ? R.drawable.fav_added : R.drawable.fav_add));
-        fav.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_wallpaper, menu);
+        menu.findItem(R.id.action_fav).setIcon(ImageUtils.getVectorDrawable(this, prefs.getBoolean(data.name + data.authorId, false) ? R.drawable.fav_added : R.drawable.fav_add));
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_fav:
                 boolean isFav = prefs.getBoolean(data.name + data.authorId, false);
-                fav.setImageDrawable(ImageUtils.getVectorDrawable(WallActivity.this, !isFav ? R.drawable.fav_added : R.drawable.fav_add));
+                item.setIcon(ImageUtils.getVectorDrawable(WallActivity.this, !isFav ? R.drawable.fav_added : R.drawable.fav_add));
                 prefs.edit().putBoolean(data.name + data.authorId, !isFav).apply();
-            }
-        });
+                break;
+            case R.id.action_fullscreen:
+                new ImageDialog(WallActivity.this).setImage(viewPager.getCurrentItem()).setWallpaper(data).show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

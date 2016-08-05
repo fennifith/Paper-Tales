@@ -1,14 +1,11 @@
 package com.james.papertales.activities;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 
 import com.james.papertales.R;
@@ -56,7 +53,7 @@ public class AboutActivity extends AppCompatActivity {
         items.add(new HeaderListData(getString(R.string.libraries), null, true, null));
 
         for (int i = 0; i < headers.length; i++) {
-            items.add(new TextListData(headers[i], contents[i], new Intent(Intent.ACTION_VIEW, Uri.parse(urls[i]))));
+            items.add(new TextListData(headers[i], contents[i], (urls[i])));
         }
 
         recycler.setLayoutManager(new GridLayoutManager(this, 1));

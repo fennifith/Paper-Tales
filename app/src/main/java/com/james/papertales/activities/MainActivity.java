@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         IDrawerItem[] items = new IDrawerItem[authors.size()];
 
         for (int i = 0; i < authors.size(); i++) {
-            items[i] = new SecondaryDrawerItem().withName(authors.get(i).name).withIdentifier(authors.get(i).id).withIcon(R.drawable.ic_wallpaper);
+            items[i] = new SecondaryDrawerItem().withName(authors.get(i).name).withIdentifier(authors.get(i).id).withIcon(R.drawable.ic_image);
         }
 
         drawer = new DrawerBuilder()

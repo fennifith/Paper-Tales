@@ -14,7 +14,10 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatDialog;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -24,9 +27,10 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.james.papertales.R;
 import com.james.papertales.Supplier;
+import com.james.papertales.adapters.ImagePagerAdapter;
 import com.james.papertales.data.WallData;
 import com.james.papertales.utils.ImageUtils;
-import com.james.papertales.views.CustomImageView;
+import com.james.papertales.views.PageIndicator;
 
 import java.io.IOException;
 
@@ -36,10 +40,11 @@ public class ImageDialog extends AppCompatDialog {
     private Supplier supplier;
     private DownloadReceiver downloadReceiver;
 
-    private String url;
+    private Integer image;
     private WallData data;
 
-    private CustomImageView image;
+    private Toolbar toolbar;
+    private ViewPager viewPager;
 
     public ImageDialog(Activity activity) {
         super(activity, R.style.AppTheme_Dialog);
@@ -52,17 +57,39 @@ public class ImageDialog extends AppCompatDialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_image);
 
-        image = (CustomImageView) findViewById(R.id.image);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        viewPager = (ViewPager) findViewById(R.id.viewPager);
+
+        if (data != null) toolbar.setTitle(data.name);
+
+        toolbar.inflateMenu(R.menu.menu_image);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_fullscreen:
+                        dismiss();
+                        break;
+                }
+                return false;
+            }
+        });
+
+        viewPager.setAdapter(new ImagePagerAdapter(activity, data, false));
+        ((PageIndicator) findViewById(R.id.indicator)).setViewPager(viewPager);
+        if (image != null) viewPager.setCurrentItem(image);
+
+        downloadReceiver = new DownloadReceiver(getContext());
 
         findViewById(R.id.download).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (data == null || url == null) return;
+                if (data == null || image == null) return;
 
                 downloadReceiver.register();
 
                 if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
-                    supplier.downloadWallpaper(getContext(), data.name, url);
+                    supplier.downloadWallpaper(getContext(), data.name, data.images.get(image));
                 else
                     ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 8027);
             }
@@ -71,15 +98,16 @@ public class ImageDialog extends AppCompatDialog {
         findViewById(R.id.share).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (url != null) supplier.shareWallpaper(getContext(), url);
+                if (data != null && image != null)
+                    supplier.shareWallpaper(getContext(), data.images.get(image));
             }
         });
 
         findViewById(R.id.apply).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (url == null) return;
-                Glide.with(activity).load(url).into(new SimpleTarget<GlideDrawable>() {
+                if (data == null || image == null) return;
+                Glide.with(getContext()).load(data.images.get(image)).into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                         if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.SET_WALLPAPER) == PackageManager.PERMISSION_GRANTED) {
@@ -102,18 +130,17 @@ public class ImageDialog extends AppCompatDialog {
                 });
             }
         });
-
-        if (url != null) Glide.with(getContext()).load(url).into(image);
     }
 
-    public ImageDialog setImage(String url) {
-        this.url = url;
-        if (image != null) Glide.with(getContext()).load(url).into(image);
+    public ImageDialog setImage(int image) {
+        this.image = image;
+        if (viewPager != null) viewPager.setCurrentItem(image);
         return this;
     }
 
     public ImageDialog setWallpaper(WallData data) {
         this.data = data;
+        if (toolbar != null) toolbar.setTitle(data.name);
         return this;
     }
 

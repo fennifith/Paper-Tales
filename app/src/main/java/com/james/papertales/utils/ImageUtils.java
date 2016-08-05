@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -12,26 +13,46 @@ import android.support.graphics.drawable.VectorDrawableCompat;
 
 public class ImageUtils {
 
+    public static Drawable getVectorDrawable(Context context, @DrawableRes int id) {
+        return VectorDrawableCompat.create(context.getResources(), id, context.getTheme());
+    }
+
     public static Bitmap drawableToBitmap(Drawable drawable) {
         if (drawable == null) drawable = new ColorDrawable(Color.TRANSPARENT);
+        if (drawable instanceof BitmapDrawable) return ((BitmapDrawable) drawable).getBitmap();
+        if (drawable instanceof VectorDrawableCompat)
+            return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
 
-        Bitmap bitmap;
+        int width = drawable.getIntrinsicWidth();
+        width = width > 0 ? width : 1;
+        int height = drawable.getIntrinsicHeight();
+        height = height > 0 ? height : 1;
 
-        if (drawable instanceof BitmapDrawable) {
-            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-            if(bitmapDrawable.getBitmap() != null) return bitmapDrawable.getBitmap();
-        }
-
-        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-        else bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
+
         return bitmap;
     }
 
-    public static Drawable getVectorDrawable(Context context, @DrawableRes int id) {
-        return VectorDrawableCompat.create(context.getResources(), id, context.getTheme());
+    public static Bitmap blurBitmap(Bitmap bitmap) {
+        Paint paint = new Paint();
+        paint.setAlpha(180);
+
+        Bitmap resultBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(resultBitmap);
+        canvas.drawBitmap(bitmap, 0, 0, paint);
+        int blurRadius = Math.max(bitmap.getWidth(), bitmap.getHeight()) / 10;
+        for (int row = -blurRadius; row < blurRadius; row += 2) {
+            for (int column = -blurRadius; column < blurRadius; column += 2) {
+                if (column * column + row * row <= blurRadius * blurRadius) {
+                    paint.setAlpha((blurRadius * blurRadius) / ((column * column + row * row) + 1) * 2);
+                    canvas.drawBitmap(bitmap, row, column, paint);
+                }
+            }
+        }
+
+        return resultBitmap;
     }
 }

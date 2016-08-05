@@ -47,12 +47,13 @@ public class ListFragment extends Fragment {
         recycler.setLayoutManager(new GridLayoutManager(getContext(), metrics.widthPixels > metrics.heightPixels ? 3 : 2));
         recycler.setAdapter(new ListAdapter(getActivity(), walls));
 
-        Random rand = new Random();
-        WallData wall = walls.get(rand.nextInt(walls.size()));
-        if (wall.images.size() > 0) Glide.with(getContext()).load(wall.images.get(rand.nextInt(wall.images.size()))).into(header);
-        if (author.image != null) Glide.with(getContext()).load(author.image).into(icon);
-
-
+        if (walls.size() > 0) {
+            Random rand = new Random();
+            WallData wall = walls.get(rand.nextInt(walls.size()));
+            if (wall.images.size() > 0)
+                Glide.with(getContext()).load(wall.images.get(rand.nextInt(wall.images.size()))).into(header);
+            if (author.image != null) Glide.with(getContext()).load(author.image).into(icon);
+        }
 
         return v;
     }

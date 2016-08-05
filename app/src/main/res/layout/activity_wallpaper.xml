@@ -7,7 +7,7 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white">
+        android:background="#E0E0E0">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
@@ -68,47 +68,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             android:orientation="vertical">
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_gravity="center_vertical">
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Date"
-                        android:id="@+id/date"
-                        android:textColor="@color/colorAccent"
-                        android:layout_marginTop="12dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginLeft="16dp"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="12dp" />
-
-                </LinearLayout>
-
-                <com.james.papertales.views.SquareImageView
-                    android:id="@+id/fav"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:tint="@color/textColorPrimaryInverse"
-                    app:srcCompat="@drawable/fav_add"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:background="?attr/selectableItemBackgroundBorderless" />
-
-            </LinearLayout>
 
             <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="match_parent"
@@ -123,48 +85,89 @@
                 app:justifyContent="flex_start" />
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date"
+                android:id="@+id/date"
+                android:textColor="@color/colorAccent"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:typeface="monospace"
+                android:layout_marginBottom="6dp" />
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/description"
                 android:textSize="14sp"
                 android:textColor="@color/textColorSecondaryInverse"
                 android:text="Description"
+                android:typeface="monospace"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_height="42dp"
+                android:layout_gravity="center_horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
                 android:background="?attr/selectableItemBackground"
-                android:id="@+id/person">
+                android:id="@+id/launchPost">
 
-                <com.james.papertales.views.CircleImageView
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="16dp"
-                    android:scaleType="centerCrop"
-                    android:src="@mipmap/wpicon"
-                    android:id="@+id/profile" />
+                <com.james.papertales.views.SquareImageView
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_launch"
+                    android:tint="@color/colorAccent"
+                    android:tintMode="src_in" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Creator"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:text="@string/action_view_in_browser"
+                    android:textAllCaps="true"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:background="?attr/selectableItemBackground"
+                android:id="@+id/launchAuthor">
+
+                <com.james.papertales.views.SquareImageView
+                    android:layout_width="24dp"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_launch"
+                    android:tint="@color/colorAccent"
+                    android:tintMode="src_in" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:id="@+id/auth"
-                    android:textColor="@color/textColorSecondaryInverse"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:textSize="16sp"
-                    android:singleLine="true"
-                    android:lines="1"
-                    android:maxLines="1"
-                    android:ellipsize="end"/>
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:text="Author"
+                    android:textAllCaps="true"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
