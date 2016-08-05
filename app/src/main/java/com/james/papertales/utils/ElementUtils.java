@@ -87,17 +87,6 @@ public class ElementUtils {
         else return "";
     }
 
-    public static String getIcon(Document document) {
-        Elements elements = document.select("image");
-        if (elements.size() > 0) {
-            Elements images = elements.select("url");
-            String src = images.get(0).text();
-            if (src.contains("?")) src = src.substring(0, src.indexOf("?"));
-            return src;
-        }
-        else return "";
-    }
-
     public static String getUrl(Document document) {
         Elements elements = document.select("link");
         if (elements.size() > 0) return elements.get(0).text();

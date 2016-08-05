@@ -20,9 +20,9 @@
                 android:layout_centerInParent="true"
                 style="?attr/progressBarStyle" />
 
-            <com.james.papertales.views.CustomImageView
+            <com.james.papertales.views.RatioImageView
                 android:layout_width="match_parent"
-                android:layout_height="288dp"
+                android:layout_height="wrap_content"
                 android:id="@+id/image"
                 android:scaleType="centerCrop" />
 

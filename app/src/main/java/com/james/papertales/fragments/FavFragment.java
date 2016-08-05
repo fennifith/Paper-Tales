@@ -28,7 +28,8 @@ public class FavFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        recycler = (RecyclerView) inflater.inflate(R.layout.fragment_fav, container, false);
+        View v = inflater.inflate(R.layout.fragment_fav, container, false);
+        recycler = (RecyclerView) v.findViewById(R.id.recycler);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
@@ -42,6 +43,6 @@ public class FavFragment extends Fragment {
         adapter.setLayoutMode(ListAdapter.LAYOUT_MODE_COMPLEX);
         recycler.setAdapter(adapter);
 
-        return recycler;
+        return v;
     }
 }

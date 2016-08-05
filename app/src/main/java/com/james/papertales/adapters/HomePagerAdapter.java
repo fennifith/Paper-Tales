@@ -39,9 +39,9 @@ public class HomePagerAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return context.getString(R.string.featured);
+                return context.getString(R.string.section_latest);
             case 1:
-                return context.getString(R.string.all);
+                return context.getString(R.string.section_all);
             default:
                 return "";
         }

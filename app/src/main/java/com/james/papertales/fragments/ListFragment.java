@@ -9,16 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
 import com.james.papertales.R;
 import com.james.papertales.Supplier;
 import com.james.papertales.adapters.ListAdapter;
 import com.james.papertales.data.AuthorData;
 import com.james.papertales.data.WallData;
-import com.james.papertales.views.CustomImageView;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class ListFragment extends Fragment {
 
@@ -30,9 +27,6 @@ public class ListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_wallpapers, container, false);
         RecyclerView recycler = (RecyclerView) v.findViewById(R.id.recycler);
-        CustomImageView header = (CustomImageView) v.findViewById(R.id.header);
-        CustomImageView icon = (CustomImageView) v.findViewById(R.id.headerIcon);
-
 
         supplier = (Supplier) getContext().getApplicationContext();
 
@@ -46,14 +40,6 @@ public class ListFragment extends Fragment {
 
         recycler.setLayoutManager(new GridLayoutManager(getContext(), metrics.widthPixels > metrics.heightPixels ? 3 : 2));
         recycler.setAdapter(new ListAdapter(getActivity(), walls));
-
-        if (walls.size() > 0) {
-            Random rand = new Random();
-            WallData wall = walls.get(rand.nextInt(walls.size()));
-            if (wall.images.size() > 0)
-                Glide.with(getContext()).load(wall.images.get(rand.nextInt(wall.images.size()))).into(header);
-            if (author.image != null) Glide.with(getContext()).load(author.image).into(icon);
-        }
 
         return v;
     }

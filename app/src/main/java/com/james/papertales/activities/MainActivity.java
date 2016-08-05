@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 .withToolbar(toolbar)
                 .withAccountHeader(new AccountHeaderBuilder()
                         .withActivity(this)
+                        .withTranslucentStatusBar(false)
                         .withCompactStyle(false)
                         .withHeaderBackground(R.mipmap.wpicon)
                         .withProfileImagesClickable(false)
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                         new DividerDrawerItem(),
                         new SecondaryDrawerItem().withName(getString(R.string.title_about)).withIdentifier(items.length + 3).withSelectable(false).withIcon(R.drawable.ic_info)
                 )
-                .withSelectedItem(items.length + 1)
+                .withSelectedItem(0)
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
@@ -115,6 +116,8 @@ public class MainActivity extends AppCompatActivity {
                             args.putInt("authorId", id);
                             fragment = new ListFragment();
                             fragment.setArguments(args);
+
+                            toolbar.setTitle(supplier.getAuthors().get(id).name);
                         }
 
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragment).commit();

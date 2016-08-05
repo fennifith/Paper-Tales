@@ -26,8 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:title="@string/app_name"
-                android:background="@drawable/gradient" />
+                app:title="@string/app_name" />
 
         </FrameLayout>
 

@@ -15,11 +15,16 @@
     <string name="title_about">About</string>
     <string name="title_search">Search</string>
 
+    <string name="action_view">View</string>
     <string name="action_view_in_browser">View in Browser</string>
+    <string name="action_favorite">Favorite</string>
+    <string name="action_unfavorite">Unfavorite</string>
     <string name="action_fullscreen">Fullscreen</string>
 
-    <string name="featured">Featured</string>
-    <string name="all">All</string>
+    <string name="section_latest">Recent</string>
+    <string name="section_all">All</string>
+
+    <string name="fetching_resources">Fetching Resources…</string>
 
     <!-- Toast messages -->
     <string name="set_wallpaper_success">Wallpaper set (ง ͠° ͟ل͜ ͡°)ง</string>
@@ -40,6 +45,7 @@
 
     <string-array name="people_wps">
         <item>https://zheanoblog.eu/feed/</item>
+        <item>http://blog.chaqula.com/feed/</item>
     </string-array>
 
     <string name="alex">Special thanks to Alexandre Piveteau for providing the code used for the page indicators.</string>

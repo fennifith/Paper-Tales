@@ -6,13 +6,12 @@ import android.support.annotation.Nullable;
 
 public class AuthorData implements Parcelable {
 
-    public String name, image, description, wp;
+    public String name, description, wp;
     @Nullable public String url;
     public int id;
 
-    public AuthorData(String name, String image, String description, int id, @Nullable String url, String wp) {
+    public AuthorData(String name, String description, int id, @Nullable String url, String wp) {
         this.name = name;
-        this.image = image;
         this.description = description;
         this.id = id;
         this.url = url;
@@ -21,7 +20,6 @@ public class AuthorData implements Parcelable {
 
     protected AuthorData(Parcel in) {
         name = in.readString();
-        image = in.readString();
         description = in.readString();
         id = in.readInt();
         url = in.readString();
@@ -48,7 +46,6 @@ public class AuthorData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
-        dest.writeString(image);
         dest.writeString(description);
         dest.writeInt(id);
         dest.writeString(url);

@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.james.papertales.R;
+import com.james.papertales.data.AuthorData;
 import com.james.papertales.data.HeaderListData;
-import com.james.papertales.data.PersonListData;
 import com.james.papertales.data.TextListData;
 
 import java.util.ArrayList;
@@ -108,17 +108,17 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
                 });
                 break;
             case 2:
-                PersonListData personData = (PersonListData) itemList.get(position);
+                AuthorData personData = (AuthorData) itemList.get(position);
 
                 ((TextView) holder.v.findViewById(R.id.header)).setText(personData.name);
-                ((TextView) holder.v.findViewById(R.id.content)).setText(personData.content);
+                ((TextView) holder.v.findViewById(R.id.content)).setText(personData.describeContents());
 
                 View button = holder.v.findViewById(R.id.button);
                 button.setTag(personData);
                 button.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(((PersonListData) v.getTag()).url)));
+                        activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(((AuthorData) v.getTag()).url)));
                     }
                 });
                 break;

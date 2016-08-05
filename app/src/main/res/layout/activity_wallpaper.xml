@@ -87,7 +87,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Date"
                 android:id="@+id/date"
                 android:textColor="@color/colorAccent"
                 android:layout_marginRight="16dp"
@@ -103,10 +102,10 @@
                 android:id="@+id/description"
                 android:textSize="14sp"
                 android:textColor="@color/textColorSecondaryInverse"
-                android:text="Description"
                 android:typeface="monospace"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp" />
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="8dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -163,7 +162,6 @@
                     android:id="@+id/auth"
                     android:paddingLeft="20dp"
                     android:paddingRight="20dp"
-                    android:text="Author"
                     android:textAllCaps="true"
                     android:textStyle="bold"
                     android:textColor="@color/colorAccent"

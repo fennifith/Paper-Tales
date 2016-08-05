@@ -52,7 +52,7 @@ public class Supplier extends Application {
                 Document document = ElementUtils.getDocument(new URL(urls[i]));
                 if (document == null) continue;
 
-                AuthorData author = new AuthorData(document.title(), ElementUtils.getIcon(document), ElementUtils.getDescription(document), i, ElementUtils.getUrl(document), urls[i]);
+                AuthorData author = new AuthorData(document.title(), ElementUtils.getDescription(document), i, ElementUtils.getUrl(document), urls[i]);
                 authors.add(author);
 
                 Elements elements = document.select("item");

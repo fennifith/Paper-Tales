@@ -11,9 +11,7 @@ import android.view.MenuItem;
 import com.james.papertales.R;
 import com.james.papertales.Supplier;
 import com.james.papertales.adapters.AboutAdapter;
-import com.james.papertales.data.AuthorData;
 import com.james.papertales.data.HeaderListData;
-import com.james.papertales.data.PersonListData;
 import com.james.papertales.data.TextListData;
 
 import java.util.ArrayList;
@@ -38,10 +36,7 @@ public class AboutActivity extends AppCompatActivity {
 
         if (getResources().getBoolean(R.bool.show_contributors)) {
             items.add(new HeaderListData(getString(R.string.contributors), null, true, null));
-
-            for (AuthorData data : ((Supplier) getApplicationContext()).getAuthors()) {
-                items.add(new PersonListData(data.image, data.name, data.description, data.url));
-            }
+            items.addAll(((Supplier) getApplicationContext()).getAuthors());
         }
 
         items.addAll(((Supplier) getApplicationContext()).getAdditionalInfo());
@@ -53,7 +48,7 @@ public class AboutActivity extends AppCompatActivity {
         items.add(new HeaderListData(getString(R.string.libraries), null, true, null));
 
         for (int i = 0; i < headers.length; i++) {
-            items.add(new TextListData(headers[i], contents[i], (urls[i])));
+            items.add(new TextListData(headers[i], contents[i], urls[i]));
         }
 
         recycler.setLayoutManager(new GridLayoutManager(this, 1));

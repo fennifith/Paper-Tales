@@ -14,8 +14,14 @@ import com.james.papertales.Supplier;
 import com.james.papertales.adapters.ListAdapter;
 import com.james.papertales.data.WallData;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Locale;
 
 public class FeaturedFragment extends Fragment {
 
@@ -26,15 +32,21 @@ public class FeaturedFragment extends Fragment {
 
         recycler.setLayoutManager(new GridLayoutManager(getContext(), 1));
 
-        ArrayList<WallData> totalWalls = ((Supplier) getContext().getApplicationContext()).getWallpapers();
-        ArrayList<WallData> walls = new ArrayList<>();
-        Random rand = new Random();
-        for (int i = 0; i < Math.min(10, totalWalls.size()); i++) {
-            WallData data;
-            do data = totalWalls.get(rand.nextInt(totalWalls.size()));
-            while (data == null || walls.contains(data));
-            walls.add(data);
-        }
+        ArrayList<WallData> walls = ((Supplier) getContext().getApplicationContext()).getWallpapers();
+
+        Collections.sort(walls, new Comparator<WallData>() {
+            @Override
+            public int compare(WallData lhs, WallData rhs) {
+                DateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
+                try {
+                    Date lhd = format.parse(lhs.date), rhd = format.parse(rhs.date);
+                    return rhd.compareTo(lhd);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    return 0;
+                }
+            }
+        });
 
         ListAdapter adapter = new ListAdapter(getActivity(), walls);
         adapter.setLayoutMode(ListAdapter.LAYOUT_MODE_COMPLEX);
