@@ -5,15 +5,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.james.papertales.BuildConfig;
 import com.james.papertales.R;
@@ -29,7 +25,6 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.util.DrawerUIUtils;
 
 import java.util.ArrayList;
 
@@ -39,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     View fragmentView;
     Fragment fragment;
     Drawer drawer;
-    DrawerLayout drawerLayout;
 
     Supplier supplier;
 
@@ -52,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         fragmentView = findViewById(R.id.fragment);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -69,10 +62,11 @@ public class MainActivity extends AppCompatActivity {
         drawer = new DrawerBuilder()
                 .withActivity(this)
                 .withFullscreen(true)
+                .withTranslucentStatusBar(true)
                 .withToolbar(toolbar)
                 .withAccountHeader(new AccountHeaderBuilder()
                         .withActivity(this)
-                        .withTranslucentStatusBar(false)
+                        .withTranslucentStatusBar(true)
                         .withCompactStyle(false)
                         .withHeaderBackground(R.mipmap.wpicon)
                         .withProfileImagesClickable(false)
@@ -121,14 +115,10 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment, fragment).commit();
-                        drawerLayout.closeDrawer(GravityCompat.START);
+                        drawer.closeDrawer();
                         return false;
                     }
-                }).buildView();
-
-        View v = drawer.getSlider();
-        v.setLayoutParams(new ViewGroup.LayoutParams(DrawerUIUtils.getOptimalDrawerWidth(this), ViewGroup.LayoutParams.MATCH_PARENT));
-        ((FrameLayout) findViewById(R.id.drawer)).addView(v);
+                }).build();
 
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
@@ -170,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case android.R.id.home:
-                drawerLayout.openDrawer(GravityCompat.START);
+                drawer.openDrawer();
                 break;
             case R.id.action_search:
                 startActivity(new Intent(MainActivity.this, SearchActivity.class));
