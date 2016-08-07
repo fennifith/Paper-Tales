@@ -7,15 +7,16 @@ import java.util.ArrayList;
 
 public class WallData implements Parcelable {
 
-    public String name, desc, date, url, authorName;
+    public String name, desc, date, url, comments, authorName;
     public int authorId;
     public ArrayList<String> images, categories;
 
-    public WallData(String name, String desc, String date, String url, ArrayList<String> images, ArrayList<String> categories, String authorName, int authorId) {
+    public WallData(String name, String desc, String date, String url, String comments, ArrayList<String> images, ArrayList<String> categories, String authorName, int authorId) {
         this.name = name;
         this.desc = desc;
         this.date = date;
         this.url = url;
+        this.comments = comments;
         this.images = images;
         this.categories = categories;
         this.authorName = authorName;
@@ -27,6 +28,7 @@ public class WallData implements Parcelable {
         desc = in.readString();
         date = in.readString();
         url = in.readString();
+        comments = in.readString();
         images = new ArrayList<>();
         in.readList(images, String.class.getClassLoader());
         categories = new ArrayList<>();
@@ -58,6 +60,7 @@ public class WallData implements Parcelable {
         dest.writeString(desc);
         dest.writeString(date);
         dest.writeString(url);
+        dest.writeString(comments);
         dest.writeList(images);
         dest.writeList(categories);
         dest.writeString(authorName);

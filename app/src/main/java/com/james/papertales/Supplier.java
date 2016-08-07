@@ -5,15 +5,18 @@ import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 
+import com.google.gson.Gson;
+import com.james.papertales.adapters.AboutAdapter;
 import com.james.papertales.data.AuthorData;
-import com.james.papertales.data.HeaderListData;
 import com.james.papertales.data.WallData;
 import com.james.papertales.utils.ElementUtils;
 
@@ -28,15 +31,33 @@ import java.util.ArrayList;
 public class Supplier extends Application {
 
     private String[] urls;
+    private int[] pages;
 
     private ArrayList<AuthorData> authors;
     private ArrayList<WallData> wallpapers;
+
+    private ArrayList<String> favWallpapers;
+
+    private SharedPreferences prefs;
+    private Gson gson;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        gson = new Gson();
+
         urls = getResources().getStringArray(R.array.people_wps);
+        pages = new int[urls.length];
+
+        favWallpapers = new ArrayList<>();
+
+        int size = prefs.getInt("favorites-size", 0);
+        for (int i = 0; i < size; i++) {
+            String json = prefs.getString("favorites-" + i, null);
+            favWallpapers.add(json);
+        }
     }
 
     public boolean getNetworkResources() {
@@ -52,12 +73,12 @@ public class Supplier extends Application {
                 Document document = ElementUtils.getDocument(new URL(urls[i]));
                 if (document == null) continue;
 
-                AuthorData author = new AuthorData(document.title(), ElementUtils.getDescription(document), i, ElementUtils.getUrl(document), urls[i]);
+                AuthorData author = new AuthorData(document.title(), ElementUtils.getDescription(document), i, urls[i].substring(0, urls[i].length() - 5), urls[i]);
                 authors.add(author);
 
                 Elements elements = document.select("item");
                 for (Element element : elements) {
-                    WallData data = new WallData(ElementUtils.getName(element), ElementUtils.getDescription(element), ElementUtils.getDate(element), ElementUtils.getLink(element), ElementUtils.getImages(element), ElementUtils.getCategories(element), author.name, author.id);
+                    WallData data = new WallData(ElementUtils.getName(element), ElementUtils.getDescription(element), ElementUtils.getDate(element), ElementUtils.getLink(element), ElementUtils.getComments(element), ElementUtils.getImages(element), ElementUtils.getCategories(element), author.name, author.id);
                     wallpapers.add(data);
                 }
                 // etc
@@ -98,8 +119,8 @@ public class Supplier extends Application {
         return walls;
     }
 
-    public void getWallpapers(final int id, final int page, final AsyncListener<ArrayList<WallData>> listener) {
-        if (id < 0 || id >= authors.size()) return;
+    public void getWallpapers(final int id, final AsyncListener<ArrayList<WallData>> listener) {
+        if (id < 0 || id >= pages.length) return;
 
         new Thread() {
             @Override
@@ -108,7 +129,7 @@ public class Supplier extends Application {
 
                 Document document;
                 try {
-                    document = ElementUtils.getDocument(new URL(urls[id] + "?paged=" + String.valueOf(page)));
+                    document = ElementUtils.getDocument(new URL(urls[id] + "?paged=" + String.valueOf(pages[id] + 2)));
                 } catch (IOException e) {
                     e.printStackTrace();
                     new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -120,13 +141,24 @@ public class Supplier extends Application {
                     return;
                 }
 
+                if (document == null) {
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            listener.onFailure();
+                        }
+                    });
+                    return;
+                }
+
                 Elements elements = document.select("item");
                 for (Element element : elements) {
-                    WallData data = new WallData(ElementUtils.getName(element), ElementUtils.getDescription(element), ElementUtils.getDate(element), ElementUtils.getLink(element), ElementUtils.getImages(element), ElementUtils.getCategories(element), authors.get(id).name, id);
+                    WallData data = new WallData(ElementUtils.getName(element), ElementUtils.getDescription(element), ElementUtils.getDate(element), ElementUtils.getLink(element), ElementUtils.getComments(element), ElementUtils.getImages(element), ElementUtils.getCategories(element), authors.get(id).name, id);
                     walls.add(data);
                 }
 
                 wallpapers.addAll(walls);
+                pages[id]++;
 
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
@@ -138,10 +170,48 @@ public class Supplier extends Application {
         }.start();
     }
 
+    public ArrayList<WallData> getFavoriteWallpapers() {
+        ArrayList<WallData> walls = new ArrayList<>();
+        for (String string : favWallpapers) {
+            walls.add(gson.fromJson(string, WallData.class));
+        }
+
+        return walls;
+    }
+
+    public boolean setFavoriteWallpapers() {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("favorites-size", favWallpapers.size());
+
+        for (int i = 0; i < favWallpapers.size(); i++) {
+            editor.putString("favorites-" + i, favWallpapers.get(i));
+        }
+
+        return editor.commit();
+    }
+
+    public boolean isFavorite(WallData data) {
+        return favWallpapers.contains(gson.toJson(data));
+    }
+
+    public boolean favoriteWallpaper(WallData data) {
+        if (isFavorite(data)) return false;
+
+        favWallpapers.add(gson.toJson(data));
+        return setFavoriteWallpapers();
+    }
+
+    public boolean unfavoriteWallpaper(WallData data) {
+        if (!isFavorite(data)) return false;
+
+        favWallpapers.remove(favWallpapers.indexOf(gson.toJson(data)));
+        return setFavoriteWallpapers();
+    }
+
     //additional info to put in the about section
-    public ArrayList<HeaderListData> getAdditionalInfo() {
-        ArrayList<HeaderListData> headers = new ArrayList<>();
-        headers.add(new HeaderListData(null, getResources().getString(R.string.alex), true, "https://github.com/cadialex"));
+    public ArrayList<AboutAdapter.Item> getAdditionalInfo() {
+        ArrayList<AboutAdapter.Item> headers = new ArrayList<>();
+        headers.add(new AboutAdapter.HeaderItem(this, null, getResources().getString(R.string.alex), true, "https://github.com/cadialex"));
         return headers;
     }
 

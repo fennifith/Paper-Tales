@@ -84,19 +84,13 @@ public class ElementUtils {
     public static String getDescription(Document document) {
         Elements elements = document.select("description");
         if (elements.size() > 0) return elements.get(0).text();
-        else return "";
-    }
-
-    public static String getUrl(Document document) {
-        Elements elements = document.select("link");
-        if (elements.size() > 0) return elements.get(0).text();
-        else return "https://www.google.com/";
+        else return null;
     }
 
     public static String getName(Element item) {
         Elements elements = item.select("title");
         if (elements.size() > 0) return elements.get(0).text();
-        else return "";
+        else return null;
     }
 
     public static String getDescription(Element item) {
@@ -109,24 +103,33 @@ public class ElementUtils {
             elements = item.select("description");
             if (elements.size() > 0) {
                 return elements.get(0).text();
-            } else return "";
+            } else return null;
         }
     }
 
     public static String getDate(Element item) {
         Elements elements = item.select("pubDate");
         if (elements.size() > 0) return elements.get(0).text();
-        else return "";
+        else return null;
     }
 
     public static String getLink(Element item) {
-        Elements elements = item.select("link");
+        Elements elements = item.select("guid");
         if (elements.size() > 0) return elements.get(0).text();
         else {
-            elements = item.select("guid");
-            if (elements.size() > 0) return elements.get(0).text();
-            else return "https://www.google.com/";
+            elements = item.select("comments");
+            if (elements.size() > 0) {
+                String link = elements.get(0).text();
+                if (link.contains("#")) link = link.substring(0, link.indexOf("#"));
+                return link;
+            } else return null;
         }
+    }
+
+    public static String getComments(Element item) {
+        Elements elements = item.select("comments");
+        if (elements.size() > 0) return elements.get(0).text();
+        else return getLink(item);
     }
 
     public static ArrayList<String> getImages(Element item) {

@@ -119,6 +119,13 @@ public class WallActivity extends AppCompatActivity {
         desc.setText(Html.fromHtml(data.desc));
         desc.setMovementMethod(new LinkMovementMethod());
 
+        findViewById(R.id.launchComments).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(data.comments)));
+            }
+        });
+
         findViewById(R.id.launchPost).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,17 +144,23 @@ public class WallActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_wallpaper, menu);
-        menu.findItem(R.id.action_fav).setIcon(ImageUtils.getVectorDrawable(this, prefs.getBoolean(data.name + data.authorId, false) ? R.drawable.fav_added : R.drawable.fav_add));
+        menu.findItem(R.id.action_fav).setIcon(ImageUtils.getVectorDrawable(this, supplier.isFavorite(data) ? R.drawable.fav_added : R.drawable.fav_add));
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
             case R.id.action_fav:
-                boolean isFav = prefs.getBoolean(data.name + data.authorId, false);
-                item.setIcon(ImageUtils.getVectorDrawable(WallActivity.this, !isFav ? R.drawable.fav_added : R.drawable.fav_add));
-                prefs.edit().putBoolean(data.name + data.authorId, !isFav).apply();
+                if (supplier.isFavorite(data)) {
+                    supplier.unfavoriteWallpaper(data);
+                } else {
+                    supplier.favoriteWallpaper(data);
+                }
+
+                item.setIcon(ImageUtils.getVectorDrawable(this, supplier.isFavorite(data) ? R.drawable.fav_added : R.drawable.fav_add));
                 break;
             case R.id.action_fullscreen:
                 new ImageDialog(WallActivity.this).setImage(viewPager.getCurrentItem()).setWallpaper(data).show();

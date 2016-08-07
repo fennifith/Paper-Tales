@@ -1,12 +1,6 @@
 <resources>
-    <!-- App name -->
     <string name="app_name">Paper Tales</string>
-
-    <!-- description -->
-    <string name="app_desc">A collection of wallpapers and stories and descriptions I don\'t feel like typing right now because I\'m tired.</string>
-
-    <!-- Slightly longer description -->
-    <string name="description">Lots of stuff.</string>
+    <string name="app_desc">A large collection of wallpapers and blog posts.</string>
 
     <!-- Activity/fragment/drawer item names -->
     <string name="title_home">Home</string>
@@ -20,6 +14,10 @@
     <string name="action_favorite">Favorite</string>
     <string name="action_unfavorite">Unfavorite</string>
     <string name="action_fullscreen">Fullscreen</string>
+    <string name="action_comments">Comments</string>
+    <string name="action_share">Share</string>
+    <string name="action_download">Download</string>
+    <string name="action_apply">Apply</string>
 
     <string name="section_latest">Recent</string>
     <string name="section_all">All</string>
@@ -45,7 +43,6 @@
 
     <string-array name="people_wps">
         <item>https://zheanoblog.eu/feed/</item>
-        <item>http://blog.chaqula.com/feed/</item>
     </string-array>
 
     <string name="alex">Special thanks to Alexandre Piveteau for providing the code used for the page indicators.</string>

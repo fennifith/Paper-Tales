@@ -19,27 +19,38 @@ import java.util.ArrayList;
 
 public class ListFragment extends Fragment {
 
-    private Supplier supplier;
-    private AuthorData author;
-    private ArrayList<WallData> walls;
+    GridLayoutManager manager;
+    ListAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_wallpapers, container, false);
         RecyclerView recycler = (RecyclerView) v.findViewById(R.id.recycler);
 
-        supplier = (Supplier) getContext().getApplicationContext();
+        Supplier supplier = (Supplier) getContext().getApplicationContext();
 
-        author = supplier.getAuthor(getArguments().getInt("authorId"));
+        AuthorData author = supplier.getAuthor(getArguments().getInt("authorId"));
         if (author == null) return null;
 
-        walls = supplier.getWallpapers(author.id);
+        ArrayList<WallData> walls = supplier.getWallpapers(author.id);
 
         DisplayMetrics metrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
-        recycler.setLayoutManager(new GridLayoutManager(getContext(), metrics.widthPixels > metrics.heightPixels ? 3 : 2));
-        recycler.setAdapter(new ListAdapter(getActivity(), walls));
+        manager = new GridLayoutManager(getContext(), metrics.widthPixels > metrics.heightPixels ? 3 : 2);
+        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (position == 0 || adapter.getItemViewType(position) == 1)
+                    return manager.getSpanCount();
+                else return 1;
+            }
+        });
+        recycler.setLayoutManager(manager);
+
+        adapter = new ListAdapter(getActivity(), walls);
+        adapter.setArtist(author.id);
+        recycler.setAdapter(adapter);
 
         return v;
     }

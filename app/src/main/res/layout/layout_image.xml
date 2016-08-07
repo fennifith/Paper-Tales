@@ -59,7 +59,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Download"
+                android:text="@string/action_download"
                 android:textColor="@color/textColorSecondary"
                 android:layout_gravity="center_horizontal"
                 android:textSize="14sp" />
@@ -85,7 +85,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Share"
+                android:text="@string/action_share"
                 android:textColor="@color/textColorSecondary"
                 android:layout_gravity="center_horizontal"
                 android:textSize="14sp" />
@@ -111,7 +111,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Apply"
+                android:text="@string/action_apply"
                 android:textColor="@color/textColorSecondary"
                 android:layout_gravity="center_horizontal"
                 android:textSize="14sp" />

@@ -1,6 +1,7 @@
 package com.james.papertales.activities;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -68,12 +69,11 @@ public class MainActivity extends AppCompatActivity {
                         .withActivity(this)
                         .withTranslucentStatusBar(true)
                         .withCompactStyle(false)
-                        .withHeaderBackground(R.mipmap.wpicon)
+                        .withHeaderBackground(new ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary)))
                         .withProfileImagesClickable(false)
                         .withSelectionListEnabledForSingleProfile(false)
-                        .addProfiles(
-                                new ProfileDrawerItem().withName(getString(R.string.app_name)).withEmail("Version " + BuildConfig.VERSION_NAME).withIcon(ContextCompat.getDrawable(this, R.mipmap.wpicon))
-                        )
+                        .withProfileImagesVisible(false)
+                        .addProfiles(new ProfileDrawerItem().withName(getResources().getString(R.string.app_name)).withEmail("Version " + BuildConfig.VERSION_NAME))
                         .build())
                 .addDrawerItems(
                         new SecondaryDrawerItem().withName(getString(R.string.title_home)).withIdentifier(items.length + 1).withIcon(R.drawable.ic_home),

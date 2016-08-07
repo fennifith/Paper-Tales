@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -13,20 +13,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.james.papertales.R;
-import com.james.papertales.data.AuthorData;
-import com.james.papertales.data.HeaderListData;
-import com.james.papertales.data.TextListData;
 
 import java.util.ArrayList;
 
 public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> {
 
     Activity activity;
-    ArrayList<Parcelable> itemList;
+    ArrayList<Item> items;
 
-    public AboutAdapter(Activity activity, ArrayList<Parcelable> itemList) {
+    public AboutAdapter(Activity activity, ArrayList<Item> items) {
         this.activity = activity;
-        this.itemList = itemList;
+        this.items = items;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -40,9 +37,8 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        if (itemList.get(position) instanceof HeaderListData) return 0;
-        else if (itemList.get(position) instanceof TextListData) return 1;
-        else return 2;
+        if (items.get(position) instanceof HeaderItem) return 0;
+        else return 1;
     }
 
     @Override
@@ -53,8 +49,6 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
                 return new ViewHolder(inflater.inflate(R.layout.layout_header, null)) ;
             case 1:
                 return new ViewHolder(inflater.inflate(R.layout.layout_text, null));
-            case 2:
-                return new ViewHolder(inflater.inflate(R.layout.layout_person, null));
             default:
                 return null;
         }
@@ -62,71 +56,111 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(AboutAdapter.ViewHolder holder, int position) {
-        switch(getItemViewType(position)) {
-            case 0:
-                HeaderListData headerData = (HeaderListData) itemList.get(position);
-
-                if (headerData.name != null) {
-                    TextView header = (TextView) holder.v.findViewById(R.id.header);
-                    header.setVisibility(View.VISIBLE);
-                    header.setText(headerData.name);
-                    if (headerData.centered) header.setGravity(Gravity.CENTER_HORIZONTAL);
-                }
-                else holder.v.findViewById(R.id.header).setVisibility(View.GONE);
-
-                if (headerData.content != null) {
-                    TextView content = (TextView) holder.v.findViewById(R.id.content);
-                    content.setVisibility(View.VISIBLE);
-                    content.setText(headerData.content);
-                    if (headerData.centered) content.setGravity(Gravity.CENTER_HORIZONTAL);
-                }
-                else holder.v.findViewById(R.id.content).setVisibility(View.GONE);
-
-                if (headerData.url != null) {
-                    holder.v.setTag(headerData);
-                    holder.v.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(((HeaderListData) v.getTag()).url)));
-                        }
-                    });
-                }
-                break;
-            case 1:
-                TextListData textData = (TextListData) itemList.get(position);
-
-                ((TextView) holder.v.findViewById(R.id.header)).setText(textData.name);
-                ((TextView) holder.v.findViewById(R.id.content)).setText(textData.content);
-
-                View card = holder.v.findViewById(R.id.card);
-                card.setTag(textData);
-                card.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(((TextListData) v.getTag()).primary)));
-                    }
-                });
-                break;
-            case 2:
-                AuthorData personData = (AuthorData) itemList.get(position);
-
-                ((TextView) holder.v.findViewById(R.id.header)).setText(personData.name);
-                ((TextView) holder.v.findViewById(R.id.content)).setText(personData.describeContents());
-
-                View button = holder.v.findViewById(R.id.button);
-                button.setTag(personData);
-                button.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(((AuthorData) v.getTag()).url)));
-                    }
-                });
-                break;
-        }
+        items.get(position).bindView(holder);
     }
 
     @Override
     public int getItemCount() {
-        return itemList.size();
+        return items.size();
+    }
+
+    public static class HeaderItem extends Item {
+
+        public boolean centered;
+        @Nullable
+        public String name, content, url;
+
+        public HeaderItem(Context context, @Nullable String name, @Nullable String content, boolean centered, @Nullable String url) {
+            super(context);
+
+            this.centered = centered;
+            this.name = name;
+            this.content = content;
+            this.url = url;
+        }
+
+        @Override
+        public void bindView(ViewHolder holder) {
+            if (name != null && name.length() > 0) {
+                TextView header = (TextView) holder.v.findViewById(R.id.header);
+                header.setVisibility(View.VISIBLE);
+                header.setText(name);
+                if (centered) header.setGravity(Gravity.CENTER_HORIZONTAL);
+            } else holder.v.findViewById(R.id.header).setVisibility(View.GONE);
+
+            if (content != null && content.length() > 0) {
+                TextView desc = (TextView) holder.v.findViewById(R.id.content);
+                desc.setVisibility(View.VISIBLE);
+                desc.setText(content);
+                if (centered) desc.setGravity(Gravity.CENTER_HORIZONTAL);
+            } else holder.v.findViewById(R.id.content).setVisibility(View.GONE);
+
+            if (url != null) {
+                holder.v.setClickable(true);
+                holder.v.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                    }
+                });
+            } else holder.v.setClickable(false);
+        }
+    }
+
+    public static class TextItem extends Item {
+
+        @Nullable
+        public String name, content, primary;
+
+        public TextItem(Context context, @Nullable String name, @Nullable String content, @Nullable String primary) {
+            super(context);
+
+            this.name = name;
+            this.content = content;
+            this.primary = primary;
+        }
+
+        @Override
+        public void bindView(ViewHolder holder) {
+
+            if (name != null && name.length() > 0) {
+                TextView header = (TextView) holder.v.findViewById(R.id.header);
+                header.setVisibility(View.VISIBLE);
+                header.setText(name);
+            } else holder.v.findViewById(R.id.header).setVisibility(View.GONE);
+
+            if (content != null && content.length() > 0) {
+                TextView desc = (TextView) holder.v.findViewById(R.id.content);
+                desc.setVisibility(View.VISIBLE);
+                desc.setText(content);
+            } else holder.v.findViewById(R.id.content).setVisibility(View.GONE);
+
+            if (primary != null) {
+                View card = holder.v.findViewById(R.id.card);
+                card.setClickable(true);
+                card.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(primary)));
+                    }
+                });
+            } else holder.v.findViewById(R.id.card).setClickable(false);
+        }
+    }
+
+    public static class Item {
+
+        private Context context;
+
+        public Item(Context context) {
+            this.context = context;
+        }
+
+        public Context getContext() {
+            return context;
+        }
+
+        public void bindView(AboutAdapter.ViewHolder holder) {
+        }
     }
 }

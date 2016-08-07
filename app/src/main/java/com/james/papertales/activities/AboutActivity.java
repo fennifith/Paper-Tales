@@ -1,7 +1,6 @@
 package com.james.papertales.activities;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,12 +10,13 @@ import android.view.MenuItem;
 import com.james.papertales.R;
 import com.james.papertales.Supplier;
 import com.james.papertales.adapters.AboutAdapter;
-import com.james.papertales.data.HeaderListData;
-import com.james.papertales.data.TextListData;
+import com.james.papertales.data.AuthorData;
 
 import java.util.ArrayList;
 
 public class AboutActivity extends AppCompatActivity {
+
+    Supplier supplier;
 
     Toolbar toolbar;
     RecyclerView recycler;
@@ -26,17 +26,21 @@ public class AboutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
+        supplier = (Supplier) getApplicationContext();
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         recycler = (RecyclerView) findViewById(R.id.recycler);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        ArrayList<Parcelable> items = new ArrayList<>();
+        ArrayList<AboutAdapter.Item> items = new ArrayList<>();
 
         if (getResources().getBoolean(R.bool.show_contributors)) {
-            items.add(new HeaderListData(getString(R.string.contributors), null, true, null));
-            items.addAll(((Supplier) getApplicationContext()).getAuthors());
+            items.add(new AboutAdapter.HeaderItem(this, getString(R.string.contributors), null, true, null));
+            for (AuthorData author : supplier.getAuthors()) {
+                items.add(new AboutAdapter.TextItem(this, author.name, author.description, author.url));
+            }
         }
 
         items.addAll(((Supplier) getApplicationContext()).getAdditionalInfo());
@@ -45,10 +49,10 @@ public class AboutActivity extends AppCompatActivity {
         String[] contents = getResources().getStringArray(R.array.desc);
         String[] urls = getResources().getStringArray(R.array.uri);
 
-        items.add(new HeaderListData(getString(R.string.libraries), null, true, null));
+        items.add(new AboutAdapter.HeaderItem(this, getString(R.string.libraries), null, true, null));
 
         for (int i = 0; i < headers.length; i++) {
-            items.add(new TextListData(headers[i], contents[i], urls[i]));
+            items.add(new AboutAdapter.TextItem(this, headers[i], contents[i], urls[i]));
         }
 
         recycler.setLayoutManager(new GridLayoutManager(this, 1));
