@@ -18,6 +18,7 @@
     <string name="action_share">Share</string>
     <string name="action_download">Download</string>
     <string name="action_apply">Apply</string>
+    <string name="action_github">GitHub</string>
 
     <string name="section_latest">Recent</string>
     <string name="section_all">All</string>
