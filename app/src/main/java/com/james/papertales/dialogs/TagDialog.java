@@ -12,6 +12,8 @@ import com.james.papertales.adapters.TagAdapter;
 
 public class TagDialog extends AppCompatDialog {
 
+    private GridLayoutManager manager;
+
     public TagDialog(Context context) {
         super(context, R.style.AppTheme_Dialog);
     }
@@ -22,7 +24,18 @@ public class TagDialog extends AppCompatDialog {
         setContentView(R.layout.dialog_tags);
 
         RecyclerView recycler = (RecyclerView) findViewById(R.id.recycler);
-        recycler.setLayoutManager(new GridLayoutManager(getContext(), 3));
+
+        manager = new GridLayoutManager(getContext(), 3);
+        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (position == 0) return manager.getSpanCount();
+                else return 1;
+            }
+        });
+        recycler.setLayoutManager(manager);
+
+        recycler.setNestedScrollingEnabled(false);
         recycler.setAdapter(new TagAdapter(getContext()));
 
         findViewById(R.id.done).setOnClickListener(new View.OnClickListener() {

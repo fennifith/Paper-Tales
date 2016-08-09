@@ -104,6 +104,14 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
         for (WallData data : totalWalls) {
             if (data.name.toLowerCase().contains(filter.toLowerCase()) || filter.toLowerCase().contains(data.name.toLowerCase())) walls.add(data);
+            else {
+                for (String category : data.categories) {
+                    if (filter.toLowerCase().contains(category.toLowerCase()) || category.toLowerCase().contains(filter.toLowerCase())) {
+                        walls.add(data);
+                        break;
+                    }
+                }
+            }
         }
 
         if (activity.getResources().getBoolean(R.bool.show_contributors)) {

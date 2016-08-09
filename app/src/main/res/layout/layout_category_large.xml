@@ -66,9 +66,15 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
         android:layout_marginTop="112dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
         android:textColor="@color/textColorSecondaryInverse"
         android:textSize="16sp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:maxLines="1"
+        android:singleLine="true"
         android:id="@+id/title" />
 
 </FrameLayout>
