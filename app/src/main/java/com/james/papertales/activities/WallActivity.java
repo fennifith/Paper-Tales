@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.james.papertales.R;
@@ -97,7 +98,7 @@ public class WallActivity extends AppCompatActivity {
         handler = new Handler();
         handler.postDelayed(runnable, 5000);
 
-        viewPager.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.appbar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 new ImageDialog(WallActivity.this).setImage(viewPager.getCurrentItem()).setWallpaper(data).show();
@@ -153,11 +154,14 @@ public class WallActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                break;
             case R.id.action_fav:
                 if (supplier.isFavorite(data)) {
-                    supplier.unfavoriteWallpaper(data);
+                    if (!supplier.unfavoriteWallpaper(data))
+                        Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
                 } else {
-                    supplier.favoriteWallpaper(data);
+                    if (!supplier.favoriteWallpaper(data))
+                        Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
                 }
 
                 item.setIcon(ImageUtils.getVectorDrawable(this, supplier.isFavorite(data) ? R.drawable.fav_added : R.drawable.fav_add));

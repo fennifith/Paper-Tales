@@ -19,16 +19,26 @@
     <string name="action_download">Download</string>
     <string name="action_apply">Apply</string>
     <string name="action_github">GitHub</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_ok">OK</string>
+    <string name="action_done">Done</string>
+    <string name="action_categories">Select Categories</string>
 
+    <string name="categories">Favorite Categories</string>
+    <string name="categories_desc">Select a few of your favorite categories. These will show up in your home feed and can be changed at any time.</string>
+
+    <string name="section_tags">Featured</string>
     <string name="section_latest">Recent</string>
-    <string name="section_all">All</string>
 
     <string name="fetching_resources">Fetching Resources…</string>
+
+    <string name="empty">Nothing here…</string>
 
     <!-- Toast messages -->
     <string name="set_wallpaper_success">Wallpaper set (ง ͠° ͟ل͜ ͡°)ง</string>
     <string name="set_wallpaper_failed">Wallpaper not set ( ͡° ʖ̯ ͡°)</string>
     <string name="download_failed">Download failed ( ͡° ʖ̯ ͡°)</string>
+    <string name="error">Something went wrong :(</string>
 
     <!-- Dialogs -->
     <string name="credit_required">Credit Required</string>

@@ -1,5 +1,7 @@
 package com.james.papertales.fragments;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,45 +15,70 @@ import com.james.papertales.R;
 import com.james.papertales.Supplier;
 import com.james.papertales.adapters.ListAdapter;
 import com.james.papertales.data.WallData;
+import com.james.papertales.dialogs.TagDialog;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Locale;
 
 public class FeaturedFragment extends Fragment {
+
+    View v;
+    Supplier supplier;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        RecyclerView recycler = (RecyclerView) inflater.inflate(R.layout.fragment_recycler, container, false);
+        v = inflater.inflate(R.layout.fragment_featured, container, false);
 
-        recycler.setLayoutManager(new GridLayoutManager(getContext(), 1));
+        supplier = (Supplier) getContext().getApplicationContext();
 
-        ArrayList<WallData> walls = ((Supplier) getContext().getApplicationContext()).getWallpapers();
+        if (!loadWallpapers()) {
+            v.findViewById(R.id.empty).setVisibility(View.VISIBLE);
 
-        Collections.sort(walls, new Comparator<WallData>() {
+            showDialog();
+        }
+
+        v.findViewById(R.id.categories).setOnClickListener(new View.OnClickListener() {
             @Override
-            public int compare(WallData lhs, WallData rhs) {
-                DateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
-                try {
-                    Date lhd = format.parse(lhs.date), rhd = format.parse(rhs.date);
-                    return rhd.compareTo(lhd);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    return 0;
-                }
+            public void onClick(View view) {
+                showDialog();
             }
         });
+
+        return v;
+    }
+
+    private boolean loadWallpapers() {
+        ArrayList<WallData> walls = new ArrayList<>();
+
+        for (WallData wall : supplier.getWallpapers()) {
+            for (String tag : supplier.getSelectedTags()) {
+                if (wall.categories.contains(tag)) {
+                    walls.add(wall);
+                    break;
+                }
+            }
+        }
+
+        RecyclerView recycler = (RecyclerView) v.findViewById(R.id.recycler);
+        recycler.setLayoutManager(new GridLayoutManager(getContext(), 1));
+        recycler.setNestedScrollingEnabled(false);
 
         ListAdapter adapter = new ListAdapter(getActivity(), walls);
         adapter.setLayoutMode(ListAdapter.LAYOUT_MODE_COMPLEX);
         recycler.setAdapter(adapter);
 
-        return recycler;
+        return walls.size() > 0;
+    }
+
+    private void showDialog() {
+        Dialog dialog = new TagDialog(getContext());
+        dialog.setTitle(R.string.categories);
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                if (loadWallpapers()) v.findViewById(R.id.empty).setVisibility(View.GONE);
+            }
+        });
+        dialog.show();
     }
 }

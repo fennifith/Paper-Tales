@@ -22,7 +22,6 @@ import com.james.papertales.fragments.ListFragment;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
@@ -77,12 +76,10 @@ public class MainActivity extends AppCompatActivity {
                         .build())
                 .addDrawerItems(
                         new SecondaryDrawerItem().withName(getString(R.string.title_home)).withIdentifier(items.length + 1).withIcon(R.drawable.ic_home),
-                        new SecondaryDrawerItem().withName(getString(R.string.title_favorites)).withIdentifier(items.length + 2).withIcon(R.drawable.ic_fav),
-                        new DividerDrawerItem()
+                        new SecondaryDrawerItem().withName(getString(R.string.title_favorites)).withIdentifier(items.length + 2).withIcon(R.drawable.ic_fav)
                 )
                 .addDrawerItems(items)
                 .addDrawerItems(
-                        new DividerDrawerItem(),
                         new SecondaryDrawerItem().withName(getString(R.string.title_about)).withIdentifier(items.length + 3).withSelectable(false).withIcon(R.drawable.ic_info)
                 )
                 .withSelectedItem(0)

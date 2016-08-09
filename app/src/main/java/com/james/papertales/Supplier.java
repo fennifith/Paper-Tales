@@ -35,8 +35,10 @@ public class Supplier extends Application {
 
     private ArrayList<AuthorData> authors;
     private ArrayList<WallData> wallpapers;
+    private ArrayList<String> tags;
 
     private ArrayList<String> favWallpapers;
+    private ArrayList<String> selectedTags;
 
     private SharedPreferences prefs;
     private Gson gson;
@@ -53,10 +55,16 @@ public class Supplier extends Application {
 
         favWallpapers = new ArrayList<>();
 
-        int size = prefs.getInt("favorites-size", 0);
-        for (int i = 0; i < size; i++) {
-            String json = prefs.getString("favorites-" + i, null);
-            favWallpapers.add(json);
+        int favSize = prefs.getInt("favorites-size", 0);
+        for (int i = 0; i < favSize; i++) {
+            favWallpapers.add(prefs.getString("favorites-" + i, null));
+        }
+
+        selectedTags = new ArrayList<>();
+
+        int tagSize = prefs.getInt("tags-size", 0);
+        for (int i = 0; i < tagSize; i++) {
+            selectedTags.add(prefs.getString("tags-" + i, null));
         }
     }
 
@@ -67,6 +75,7 @@ public class Supplier extends Application {
 
         authors = new ArrayList<>();
         wallpapers = new ArrayList<>();
+        tags = new ArrayList<>();
 
         for (int i = 0; i < urls.length; i++) {
             try {
@@ -80,6 +89,10 @@ public class Supplier extends Application {
                 for (Element element : elements) {
                     WallData data = new WallData(ElementUtils.getName(element), ElementUtils.getDescription(element), ElementUtils.getDate(element), ElementUtils.getLink(element), ElementUtils.getComments(element), ElementUtils.getImages(element), ElementUtils.getCategories(element), author.name, author.id);
                     wallpapers.add(data);
+
+                    for (String tag : data.categories) {
+                        if (!tags.contains(tag)) tags.add(tag);
+                    }
                 }
                 // etc
             } catch (IOException e) {
@@ -170,6 +183,49 @@ public class Supplier extends Application {
         }.start();
     }
 
+    public ArrayList<String> getTags() {
+        ArrayList<String> strings = new ArrayList<>();
+
+        strings.addAll(tags);
+        return strings;
+    }
+
+    public ArrayList<String> getSelectedTags() {
+        ArrayList<String> strings = new ArrayList<>();
+
+        strings.addAll(selectedTags);
+        return strings;
+    }
+
+    public boolean setSelectedTags() {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("tags-size", selectedTags.size());
+
+        for (int i = 0; i < selectedTags.size(); i++) {
+            editor.putString("tags-" + i, selectedTags.get(i));
+        }
+
+        return editor.commit();
+    }
+
+    public boolean isSelected(String tag) {
+        return selectedTags.contains(tag);
+    }
+
+    public boolean selectTag(String tag) {
+        if (isSelected(tag)) return false;
+
+        selectedTags.add(tag);
+        return setSelectedTags();
+    }
+
+    public boolean deselectTag(String tag) {
+        if (!isSelected(tag)) return false;
+
+        selectedTags.remove(tag);
+        return setSelectedTags();
+    }
+
     public ArrayList<WallData> getFavoriteWallpapers() {
         ArrayList<WallData> walls = new ArrayList<>();
         for (String string : favWallpapers) {
@@ -204,7 +260,7 @@ public class Supplier extends Application {
     public boolean unfavoriteWallpaper(WallData data) {
         if (!isFavorite(data)) return false;
 
-        favWallpapers.remove(favWallpapers.indexOf(gson.toJson(data)));
+        favWallpapers.remove(gson.toJson(data));
         return setFavoriteWallpapers();
     }
 

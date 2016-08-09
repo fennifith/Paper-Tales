@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.james.papertales.R;
 import com.james.papertales.fragments.FeaturedFragment;
-import com.james.papertales.fragments.RandomFragment;
+import com.james.papertales.fragments.RecentFragment;
 
 public class HomePagerAdapter extends FragmentStatePagerAdapter {
 
@@ -24,7 +24,7 @@ public class HomePagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return new FeaturedFragment();
             case 1:
-                return new RandomFragment();
+                return new RecentFragment();
             default:
                 return null;
         }
@@ -39,9 +39,9 @@ public class HomePagerAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return context.getString(R.string.section_latest);
+                return context.getString(R.string.section_tags);
             case 1:
-                return context.getString(R.string.section_all);
+                return context.getString(R.string.section_latest);
             default:
                 return "";
         }
