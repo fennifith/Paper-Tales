@@ -8,6 +8,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.james.papertales.data.WallData;
+import com.james.papertales.dialogs.ImageDialog;
 import com.james.papertales.views.CustomImageView;
 
 public class ImagePagerAdapter extends PagerAdapter {
@@ -29,9 +30,19 @@ public class ImagePagerAdapter extends PagerAdapter {
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(ViewGroup container, final int position) {
         ImageView image = new CustomImageView(activity);
-        if (centerCrop) image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+        if (centerCrop) {
+            image.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new ImageDialog(activity).setImage(position).setWallpaper(data).show();
+                }
+            });
+        }
+
         Glide.with(activity).load(data.images.get(position)).into(image);
         container.addView(image);
 

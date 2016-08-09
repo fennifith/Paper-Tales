@@ -23,7 +23,6 @@ public class TagDialog extends AppCompatDialog {
 
         RecyclerView recycler = (RecyclerView) findViewById(R.id.recycler);
         recycler.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        recycler.setNestedScrollingEnabled(false);
         recycler.setAdapter(new TagAdapter(getContext()));
 
         findViewById(R.id.done).setOnClickListener(new View.OnClickListener() {

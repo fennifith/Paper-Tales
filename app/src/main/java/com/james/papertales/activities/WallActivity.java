@@ -1,5 +1,6 @@
 package com.james.papertales.activities;
 
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -98,19 +99,34 @@ public class WallActivity extends AppCompatActivity {
         handler = new Handler();
         handler.postDelayed(runnable, 5000);
 
-        findViewById(R.id.appbar).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new ImageDialog(WallActivity.this).setImage(viewPager.getCurrentItem()).setWallpaper(data).show();
-            }
-        });
-
         if (data.categories.size() > 0) {
             categories.setVisibility(View.VISIBLE);
 
             for (String category : data.categories) {
                 View v = LayoutInflater.from(this).inflate(R.layout.layout_category, null);
                 ((TextView) v.findViewById(R.id.title)).setText(category.toLowerCase());
+
+                if (supplier.isSelected(category)) {
+                    v.findViewById(R.id.selected).setVisibility(View.VISIBLE);
+                }
+
+                v.setTag(category);
+                v.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String tag = (String) view.getTag();
+                        View selected = view.findViewById(R.id.selected);
+
+                        if (supplier.isSelected(tag)) {
+                            animateView(selected, 1f, 0f);
+                            supplier.deselectTag(tag);
+                        } else {
+                            animateView(selected, 0f, 1f);
+                            supplier.selectTag(tag);
+                        }
+                    }
+                });
+
                 categories.addView(v);
             }
         }
@@ -171,5 +187,21 @@ public class WallActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void animateView(final View v, float... alpha) {
+        ValueAnimator animator = ValueAnimator.ofFloat(alpha);
+        animator.setDuration(150);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float alpha = (float) valueAnimator.getAnimatedValue();
+                v.setAlpha(alpha);
+
+                if (alpha == 0f) v.setVisibility(View.GONE);
+                else v.setVisibility(View.VISIBLE);
+            }
+        });
+        animator.start();
     }
 }
