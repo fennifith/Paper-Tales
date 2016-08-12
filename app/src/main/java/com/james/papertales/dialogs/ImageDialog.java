@@ -107,6 +107,7 @@ public class ImageDialog extends AppCompatDialog {
             @Override
             public void onClick(View view) {
                 if (data == null || image == null) return;
+
                 Glide.with(getContext()).load(data.images.get(image)).into(new SimpleTarget<GlideDrawable>() {
                     @Override
                     public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
@@ -128,6 +129,8 @@ public class ImageDialog extends AppCompatDialog {
                         Toast.makeText(getContext(), R.string.download_failed, Toast.LENGTH_SHORT).show();
                     }
                 });
+
+                if (isShowing()) dismiss();
             }
         });
     }
