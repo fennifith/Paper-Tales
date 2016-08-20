@@ -25,7 +25,7 @@
     <string name="action_categories">Select Categories</string>
 
     <string name="categories">Favorite Categories</string>
-    <string name="categories_desc">Select a few of your favorite categories. These will show up in your home feed and can be changed at any time.</string>
+    <string name="categories_desc">Select a few of your favorite categories. These will show up in your home feed and can be changed as your browse through different posts.</string>
 
     <string name="section_tags">Featured</string>
     <string name="section_latest">Recent</string>
@@ -54,6 +54,7 @@
 
     <string-array name="people_wps">
         <item>https://zheanoblog.eu/feed/</item>
+        <item>http://darinsdesign.ml/feed/</item>
     </string-array>
 
     <string name="alex">Special thanks to Alexandre Piveteau for providing the code used for the page indicators.</string>

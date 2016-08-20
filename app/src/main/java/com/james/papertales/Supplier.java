@@ -82,7 +82,11 @@ public class Supplier extends Application {
                 Document document = ElementUtils.getDocument(new URL(urls[i]));
                 if (document == null) continue;
 
-                AuthorData author = new AuthorData(document.title(), ElementUtils.getDescription(document), i, urls[i].substring(0, urls[i].length() - 5), urls[i]);
+                String title = ElementUtils.getTitle(document);
+                if (title == null)
+                    title = urls[i].substring(urls[i].indexOf('/', 6), urls[i].indexOf('.', 8));
+
+                AuthorData author = new AuthorData(title, ElementUtils.getDescription(document), i, urls[i].substring(0, urls[i].length() - 5), urls[i]);
                 authors.add(author);
 
                 Elements elements = document.select("item");

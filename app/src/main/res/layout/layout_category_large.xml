@@ -7,8 +7,9 @@
     android:background="?attr/selectableItemBackground">
 
     <FrameLayout
-        android:layout_width="match_parent"
+        android:layout_width="112dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:padding="8dp">
 
         <com.james.papertales.views.CircleImageView
@@ -33,15 +34,10 @@
         android:id="@+id/selected"
         android:visibility="gone">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorAccent"
-            android:alpha="0.3" />
-
         <FrameLayout
-            android:layout_width="match_parent"
+            android:layout_width="112dp"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:padding="8dp">
 
             <com.james.papertales.views.CircleImageView

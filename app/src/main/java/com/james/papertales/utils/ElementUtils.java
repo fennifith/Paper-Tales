@@ -81,6 +81,19 @@ public class ElementUtils {
         }
     }
 
+    @Nullable
+    public static String getTitle(Document document) {
+        if (document.title() != null) return document.title();
+        else {
+            Elements elements = document.select("image");
+            if (elements.size() > 0) {
+                Elements titles = elements.get(0).select("title");
+                if (titles.size() > 0) return titles.get(0).text();
+                else return null;
+            } else return null;
+        }
+    }
+
     public static String getDescription(Document document) {
         Elements elements = document.select("description");
         if (elements.size() > 0) return elements.get(0).text();
