@@ -9,7 +9,8 @@
         android:layout_height="32dp"
         android:background="@drawable/category"
         android:layout_margin="4dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:animateLayoutChanges="true">
 
         <FrameLayout
             android:layout_width="wrap_content"

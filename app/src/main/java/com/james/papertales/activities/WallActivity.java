@@ -1,6 +1,5 @@
 package com.james.papertales.activities;
 
-import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -118,10 +117,10 @@ public class WallActivity extends AppCompatActivity {
                         View selected = view.findViewById(R.id.selected);
 
                         if (supplier.isSelected(tag)) {
-                            animateView(selected, 1f, 0f);
+                            selected.setVisibility(View.GONE);
                             supplier.deselectTag(tag);
                         } else {
-                            animateView(selected, 0f, 1f);
+                            selected.setVisibility(View.VISIBLE);
                             supplier.selectTag(tag);
                         }
                     }
@@ -187,21 +186,5 @@ public class WallActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void animateView(final View v, float... alpha) {
-        ValueAnimator animator = ValueAnimator.ofFloat(alpha);
-        animator.setDuration(150);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                float alpha = (float) valueAnimator.getAnimatedValue();
-                v.setAlpha(alpha);
-
-                if (alpha == 0f) v.setVisibility(View.GONE);
-                else v.setVisibility(View.VISIBLE);
-            }
-        });
-        animator.start();
     }
 }
