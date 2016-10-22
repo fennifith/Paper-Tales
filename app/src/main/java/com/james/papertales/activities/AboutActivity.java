@@ -1,6 +1,5 @@
 package com.james.papertales.activities;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +13,7 @@ import com.james.papertales.R;
 import com.james.papertales.Supplier;
 import com.james.papertales.adapters.AboutAdapter;
 import com.james.papertales.data.AuthorData;
+import com.james.papertales.utils.StaticUtils;
 
 import java.util.ArrayList;
 
@@ -46,7 +46,7 @@ public class AboutActivity extends AppCompatActivity {
             }
         }
 
-        items.addAll(((Supplier) getApplicationContext()).getAdditionalInfo());
+        items.addAll(((Supplier) getApplicationContext()).getAdditionalInfo(this));
 
         String[] headers = getResources().getStringArray(R.array.namey);
         String[] contents = getResources().getStringArray(R.array.desc);
@@ -75,7 +75,7 @@ public class AboutActivity extends AppCompatActivity {
                 onBackPressed();
                 break;
             case R.id.action_github:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/TheAndroidMaster/Paper-Tales")));
+                StaticUtils.launchCustomTabs(this, Uri.parse("https://github.com/TheAndroidMaster/Paper-Tales"));
                 break;
         }
         return super.onOptionsItemSelected(item);

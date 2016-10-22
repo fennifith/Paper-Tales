@@ -55,4 +55,16 @@ public class ImageUtils {
 
         return resultBitmap;
     }
+
+    public static int muteColor(int color, int variant) {
+        int mutedColor = Color.argb(255, (int) (127.5 + Color.red(color)) / 2, (int) (127.5 + Color.green(color)) / 2, (int) (127.5 + Color.blue(color)) / 2);
+        switch (variant % 3) {
+            case 1:
+                return Color.argb(255, Color.red(mutedColor) + 10, Color.green(mutedColor) + 10, Color.blue(mutedColor) + 10);
+            case 2:
+                return Color.argb(255, Color.red(mutedColor) - 10, Color.green(mutedColor) - 10, Color.blue(mutedColor) - 10);
+            default:
+                return mutedColor;
+        }
+    }
 }

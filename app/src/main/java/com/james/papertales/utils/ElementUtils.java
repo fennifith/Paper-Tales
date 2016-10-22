@@ -111,11 +111,11 @@ public class ElementUtils {
         if (elements.size() > 0) {
             Document document = Jsoup.parse(elements.get(0).text());
             document.select("img").remove();
-            return document.text();
+            return document.html();
         } else {
             elements = item.select("description");
             if (elements.size() > 0) {
-                return elements.get(0).text();
+                return elements.get(0).html();
             } else return null;
         }
     }

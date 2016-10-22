@@ -2,7 +2,6 @@ package com.james.papertales.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -13,13 +12,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.james.papertales.R;
+import com.james.papertales.utils.StaticUtils;
 
 import java.util.ArrayList;
 
 public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> {
 
-    Activity activity;
-    ArrayList<Item> items;
+    private Activity activity;
+    private ArrayList<Item> items;
 
     public AboutAdapter(Activity activity, ArrayList<Item> items) {
         this.activity = activity;
@@ -27,7 +27,9 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
+
         public View v;
+
         public ViewHolder(View v) {
             super(v);
             this.v = v;
@@ -46,9 +48,9 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
         LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         switch (viewType) {
             case 0:
-                return new ViewHolder(inflater.inflate(R.layout.layout_header, null)) ;
+                return new ViewHolder(inflater.inflate(R.layout.layout_header, parent, false));
             case 1:
-                return new ViewHolder(inflater.inflate(R.layout.layout_text, null));
+                return new ViewHolder(inflater.inflate(R.layout.layout_text, parent, false));
             default:
                 return null;
         }
@@ -70,8 +72,8 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
         @Nullable
         public String name, content, url;
 
-        public HeaderItem(Context context, @Nullable String name, @Nullable String content, boolean centered, @Nullable String url) {
-            super(context);
+        public HeaderItem(Activity activity, @Nullable String name, @Nullable String content, boolean centered, @Nullable String url) {
+            super(activity);
 
             this.centered = centered;
             this.name = name;
@@ -100,7 +102,7 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
                 holder.v.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                        StaticUtils.launchCustomTabs(getContext(), Uri.parse(url));
                     }
                 });
             } else holder.v.setClickable(false);
@@ -112,8 +114,8 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
         @Nullable
         public String name, content, primary;
 
-        public TextItem(Context context, @Nullable String name, @Nullable String content, @Nullable String primary) {
-            super(context);
+        public TextItem(Activity activity, @Nullable String name, @Nullable String content, @Nullable String primary) {
+            super(activity);
 
             this.name = name;
             this.content = content;
@@ -141,7 +143,7 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
                 card.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(primary)));
+                        StaticUtils.launchCustomTabs(getContext(), Uri.parse(primary));
                     }
                 });
             } else holder.v.findViewById(R.id.card).setClickable(false);
@@ -150,13 +152,13 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
 
     public static class Item {
 
-        private Context context;
+        private Activity context;
 
-        public Item(Context context) {
+        public Item(Activity context) {
             this.context = context;
         }
 
-        public Context getContext() {
+        public Activity getContext() {
             return context;
         }
 

@@ -3,6 +3,7 @@ package com.james.papertales.adapters;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -71,6 +72,10 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                 image.setImageBitmap(null);
 
                 ((TextView) holder.v.findViewById(R.id.title)).setText(walls.get(position).name);
+                ((TextView) holder.v.findViewById(R.id.author)).setText(layoutMode == LAYOUT_MODE_COMPLEX ? walls.get(position).authorName : walls.get(position).date);
+
+                if (layoutMode != LAYOUT_MODE_COMPLEX)
+                    holder.v.setBackgroundColor(ImageUtils.muteColor(Color.WHITE, position));
 
                 holder.v.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -81,12 +86,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
 
                         CustomImageView image = (CustomImageView) holder.v.findViewById(R.id.image);
 
+                        Bitmap bitmap = null;
                         if (image.getDrawable() != null) {
                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             Drawable prev = image.getDrawable();
                             if (prev instanceof TransitionDrawable)
                                 prev = ((TransitionDrawable) image.getDrawable()).getDrawable(1);
-                            Bitmap bitmap;
+
                             try {
                                 bitmap = ImageUtils.drawableToBitmap(prev);
                                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
@@ -97,26 +103,24 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                             }
                             byte[] b = baos.toByteArray();
                             intent.putExtra("preload", b);
-
-                            ActivityOptionsCompat options = ActivityOptionsCompat.makeThumbnailScaleUpAnimation(v, bitmap, 5, 5);
-                            ActivityOptionsCompat.makeScaleUpAnimation(v, (int) v.getX(), (int) v.getY(), v.getWidth(), v.getHeight());
-                            activity.startActivity(intent, options.toBundle());
-                        } else {
-                            activity.startActivity(intent);
                         }
+
+                        ActivityOptionsCompat options;
+                        if (bitmap != null)
+                            options = ActivityOptionsCompat.makeThumbnailScaleUpAnimation(v, bitmap, 5, 5);
+                        else
+                            options = ActivityOptionsCompat.makeScaleUpAnimation(v, (int) v.getX(), (int) v.getY(), v.getWidth(), v.getHeight());
+                        activity.startActivity(intent, options.toBundle());
                     }
                 });
 
                 if (layoutMode == LAYOUT_MODE_HORIZONTAL && image instanceof SquareImageView)
                     ((SquareImageView) image).setOrientation(SquareImageView.HORIZONTAL);
 
-                if (layoutMode == LAYOUT_MODE_COMPLEX) {
-                    ((TextView) holder.v.findViewById(R.id.author)).setText(walls.get(position).authorName);
-                }
-
                 WallData data = walls.get(holder.getAdapterPosition());
-                if (data.images.size() > 0)
-                    Glide.with(activity).load(data.images.get(0)).into(image);
+                if (data.images.size() > 0) {
+                    Glide.with(activity).load(data.images.get(0)).thumbnail(0.2f).into(image);
+                }
 
                 break;
             case 1:

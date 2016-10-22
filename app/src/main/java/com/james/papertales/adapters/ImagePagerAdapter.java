@@ -43,7 +43,7 @@ public class ImagePagerAdapter extends PagerAdapter {
             });
         }
 
-        Glide.with(activity).load(data.images.get(position)).into(image);
+        Glide.with(activity).load(data.images.get(position)).thumbnail(0.2f).into(image);
         container.addView(image);
 
         return image;

@@ -2,9 +2,9 @@ package com.james.papertales.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.view.animation.DecelerateInterpolator;
 
@@ -52,7 +52,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-        rv.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        rv.setLayoutManager(new GridLayoutManager(this, 1));
         adapter = new SearchAdapter(SearchActivity.this);
         rv.setAdapter(adapter);
 

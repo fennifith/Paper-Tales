@@ -54,7 +54,6 @@
 
     <string-array name="people_wps">
         <item>https://zheanoblog.eu/feed/</item>
-        <item>http://darinsdesign.ml/feed/</item>
     </string-array>
 
     <string name="alex">Special thanks to Alexandre Piveteau for providing the code used for the page indicators.</string>

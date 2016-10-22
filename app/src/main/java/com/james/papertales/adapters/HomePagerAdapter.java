@@ -13,12 +13,14 @@ import com.james.papertales.fragments.TagFragment;
 
 public class HomePagerAdapter extends FragmentStatePagerAdapter {
 
-    Context context;
-    Supplier supplier;
+    private Context context;
+    private FragmentManager fragmentManager;
+    private Supplier supplier;
 
-    public HomePagerAdapter(Context context, FragmentManager fm) {
-        super(fm);
+    public HomePagerAdapter(Context context, FragmentManager fragmentManager) {
+        super(fragmentManager);
         this.context = context;
+        this.fragmentManager = fragmentManager;
         this.supplier = (Supplier) context.getApplicationContext();
     }
 
@@ -62,6 +64,8 @@ public class HomePagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getItemPosition(Object object) {
-        return POSITION_NONE;
+        if (object instanceof Fragment && fragmentManager.getFragments().contains(object))
+            return POSITION_NONE;
+        else return POSITION_UNCHANGED;
     }
 }

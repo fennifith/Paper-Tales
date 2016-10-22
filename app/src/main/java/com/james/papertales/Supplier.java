@@ -1,5 +1,6 @@
 package com.james.papertales;
 
+import android.app.Activity;
 import android.app.Application;
 import android.app.DownloadManager;
 import android.content.Context;
@@ -269,9 +270,9 @@ public class Supplier extends Application {
     }
 
     //additional info to put in the about section
-    public ArrayList<AboutAdapter.Item> getAdditionalInfo() {
+    public ArrayList<AboutAdapter.Item> getAdditionalInfo(Activity activity) {
         ArrayList<AboutAdapter.Item> headers = new ArrayList<>();
-        headers.add(new AboutAdapter.HeaderItem(this, null, getResources().getString(R.string.alex), true, "https://github.com/cadialex"));
+        headers.add(new AboutAdapter.HeaderItem(activity, null, getResources().getString(R.string.alex), true, "https://github.com/cadialex"));
         return headers;
     }
 

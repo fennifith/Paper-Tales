@@ -25,42 +25,20 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".activities.MainActivity"
-            android:label="@string/app_name"/>
+        <activity android:name=".activities.MainActivity" />
 
-        <activity
-            android:name=".activities.WallActivity"
-            android:label="@string/app_name"
-            android:parentActivityName=".activities.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity" />
-        </activity>
+        <activity android:name=".activities.WallActivity" />
 
         <activity
             android:name=".activities.SearchActivity"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:parentActivityName=".activities.MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity" />
-
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH"/>
                 <action android:name="android.intent.action.VIEW"/>
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".activities.AboutActivity"
-            android:label="@string/app_name"
-            android:parentActivityName=".activities.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.MainActivity" />
-        </activity>
+        <activity android:name=".activities.AboutActivity" />
 
         <service android:name=".MuzeiArtSource"
             android:icon="@drawable/muzeiartwork"

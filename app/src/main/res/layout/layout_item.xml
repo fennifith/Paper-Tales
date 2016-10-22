@@ -1,52 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="#EEEEEE">
 
-    <android.support.v7.widget.CardView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        app:cardUseCompatPadding="true">
+        android:background="?attr/selectableItemBackground">
 
-        <RelativeLayout
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            style="?attr/progressBarStyle" />
+
+        <com.james.papertales.views.SquareImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:id="@+id/image"
+            android:scaleType="centerCrop" />
 
-            <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                style="?attr/progressBarStyle" />
-
-            <com.james.papertales.views.SquareImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/image"
-                android:scaleType="centerCrop" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:layout_below="@id/image"
+            android:paddingRight="16dp"
+            android:paddingLeft="16dp">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:textColor="@color/textColorPrimaryInverse"
                 android:id="@+id/title"
-                android:gravity="center_vertical"
-                android:paddingRight="16dp"
-                android:paddingLeft="16dp"
-                android:layout_below="@id/image"
+                android:textSize="16sp"
                 android:singleLine="true"
                 android:lines="1"
                 android:maxLines="1"
                 android:ellipsize="end" />
 
-            <FrameLayout
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?attr/selectableItemBackground" />
+                android:layout_height="wrap_content"
+                android:textColor="@color/textColorSecondaryInverse"
+                android:id="@+id/author"
+                android:textSize="14sp"
+                android:singleLine="true"
+                android:lines="1"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
-    </android.support.v7.widget.CardView>
+    </RelativeLayout>
 
 </FrameLayout>

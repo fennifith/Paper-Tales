@@ -1,16 +1,23 @@
 package com.james.papertales.activities;
 
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcel;
 import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.text.method.TransformationMethod;
+import android.text.style.URLSpan;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,6 +32,7 @@ import com.james.papertales.adapters.ImagePagerAdapter;
 import com.james.papertales.data.WallData;
 import com.james.papertales.dialogs.ImageDialog;
 import com.james.papertales.utils.ImageUtils;
+import com.james.papertales.utils.StaticUtils;
 import com.james.papertales.views.PageIndicator;
 
 
@@ -133,26 +141,27 @@ public class WallActivity extends AppCompatActivity {
         date.setText(data.date);
         auth.setText(data.authorName);
         desc.setText(Html.fromHtml(data.desc));
+        desc.setTransformationMethod(new CustomTabsTransformationMethod());
         desc.setMovementMethod(new LinkMovementMethod());
 
         findViewById(R.id.launchComments).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(data.comments)));
+                StaticUtils.launchCustomTabs(WallActivity.this, Uri.parse(data.comments));
             }
         });
 
         findViewById(R.id.launchPost).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(data.url)));
+                StaticUtils.launchCustomTabs(WallActivity.this, Uri.parse(data.url));
             }
         });
 
         findViewById(R.id.launchAuthor).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(supplier.getAuthors().get(data.authorId).url)));
+                StaticUtils.launchCustomTabs(WallActivity.this, Uri.parse(supplier.getAuthors().get(data.authorId).url));
             }
         });
     }
@@ -186,5 +195,52 @@ public class WallActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public class CustomTabsTransformationMethod implements TransformationMethod {
+
+        @Override
+        public CharSequence getTransformation(CharSequence src, View view) {
+            if (view instanceof TextView) {
+                TextView textView = (TextView) view;
+                Linkify.addLinks(textView, Linkify.WEB_URLS);
+
+                if (textView.getText() != null && textView.getText() instanceof Spannable) {
+                    Spannable text = (Spannable) textView.getText();
+                    URLSpan[] spans = text.getSpans(0, textView.length(), URLSpan.class);
+                    for (int i = spans.length - 1; i >= 0; i--) {
+                        URLSpan oldSpan = spans[i];
+                        int start = text.getSpanStart(oldSpan), end = text.getSpanEnd(oldSpan);
+                        String url = oldSpan.getURL();
+
+                        text.removeSpan(oldSpan);
+                        text.setSpan(new CustomTabsURLSpan(url), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+                    return text;
+                }
+            }
+            return src;
+        }
+
+        @Override
+        public void onFocusChanged(View view, CharSequence sourceText, boolean focused, int direction, Rect previouslyFocusedRect) {
+        }
+
+        @SuppressLint("ParcelCreator")
+        public class CustomTabsURLSpan extends URLSpan {
+
+            public CustomTabsURLSpan(String url) {
+                super(url);
+            }
+
+            public CustomTabsURLSpan(Parcel src) {
+                super(src);
+            }
+
+            @Override
+            public void onClick(View view) {
+                StaticUtils.launchCustomTabs(WallActivity.this, Uri.parse(getURL()));
+            }
+        }
     }
 }
