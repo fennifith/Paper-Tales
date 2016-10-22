@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import com.james.papertales.R;
 import com.james.papertales.Supplier;
 import com.james.papertales.adapters.ListAdapter;
+import com.james.papertales.data.WallData;
+
+import java.util.ArrayList;
 
 public class FavFragment extends Fragment {
 
@@ -21,10 +24,13 @@ public class FavFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_fav, container, false);
         RecyclerView recycler = (RecyclerView) v.findViewById(R.id.recycler);
 
-        recycler.setLayoutManager(new GridLayoutManager(getContext(), 1));
-        ListAdapter adapter = new ListAdapter(getActivity(), ((Supplier) getContext().getApplicationContext()).getFavoriteWallpapers());
-        adapter.setLayoutMode(ListAdapter.LAYOUT_MODE_COMPLEX);
-        recycler.setAdapter(adapter);
+        ArrayList<WallData> walls = ((Supplier) getContext().getApplicationContext()).getFavoriteWallpapers();
+        if (walls.size() > 0) {
+            recycler.setLayoutManager(new GridLayoutManager(getContext(), 1));
+            ListAdapter adapter = new ListAdapter(getActivity(), walls);
+            adapter.setLayoutMode(ListAdapter.LAYOUT_MODE_COMPLEX);
+            recycler.setAdapter(adapter);
+        } else v.findViewById(R.id.empty).setVisibility(View.VISIBLE);
 
         return v;
     }
