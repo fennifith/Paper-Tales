@@ -3,7 +3,6 @@ package com.james.papertales.adapters;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -11,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -74,9 +74,6 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                 ((TextView) holder.v.findViewById(R.id.title)).setText(walls.get(position).name);
                 ((TextView) holder.v.findViewById(R.id.author)).setText(layoutMode == LAYOUT_MODE_COMPLEX ? walls.get(position).authorName : walls.get(position).date);
 
-                if (layoutMode != LAYOUT_MODE_COMPLEX)
-                    holder.v.setBackgroundColor(ImageUtils.muteColor(Color.WHITE, position));
-
                 holder.v.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -121,6 +118,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                 if (data.images.size() > 0) {
                     Glide.with(activity).load(data.images.get(0)).thumbnail(0.2f).into(image);
                 }
+
+                holder.v.setScaleY(0.8f);
+                holder.v.setScaleX(0.8f);
+                holder.v.setAlpha(0);
+                holder.v.animate().scaleY(1).scaleX(1).alpha(1).setDuration(350).setInterpolator(new DecelerateInterpolator()).start();
 
                 break;
             case 1:

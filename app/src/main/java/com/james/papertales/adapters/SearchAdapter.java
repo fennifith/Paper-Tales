@@ -76,8 +76,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             subtitle.setText(null);
         }
 
-        holder.clicker.setTag(position);
-        holder.clicker.setOnClickListener(new View.OnClickListener() {
+        holder.card.setTag(position);
+        holder.card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (getItemViewType(holder.getAdapterPosition()) == 0) {
