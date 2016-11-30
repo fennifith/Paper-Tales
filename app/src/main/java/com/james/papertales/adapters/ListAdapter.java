@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,6 @@ import com.james.papertales.Supplier;
 import com.james.papertales.activities.WallActivity;
 import com.james.papertales.data.WallData;
 import com.james.papertales.utils.ImageUtils;
-import com.james.papertales.views.CustomImageView;
 import com.james.papertales.views.SquareImageView;
 
 import java.io.ByteArrayOutputStream;
@@ -68,7 +68,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     public void onBindViewHolder(final ListAdapter.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
             case 0:
-                CustomImageView image = (CustomImageView) holder.v.findViewById(R.id.image);
+                AppCompatImageView image = (AppCompatImageView) holder.v.findViewById(R.id.image);
                 image.setImageBitmap(null);
 
                 ((TextView) holder.v.findViewById(R.id.title)).setText(walls.get(position).name);
@@ -81,7 +81,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                         intent.putExtra("wall", walls.get(holder.getAdapterPosition()));
                         intent.putExtra("up", "Flat");
 
-                        CustomImageView image = (CustomImageView) holder.v.findViewById(R.id.image);
+                        AppCompatImageView image = (AppCompatImageView) holder.v.findViewById(R.id.image);
 
                         Bitmap bitmap = null;
                         if (image.getDrawable() != null) {

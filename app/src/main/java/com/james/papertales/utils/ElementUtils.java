@@ -14,18 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.X509TrustManager;
 
 public class ElementUtils {
 
@@ -35,38 +24,10 @@ public class ElementUtils {
             String result = "";
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
-            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-                @Override
-                public boolean verify(String s, SSLSession sslSession) {
-                    return true;
-                }
-            });
-
-            SSLContext context = SSLContext.getInstance("TLS");
-            context.init(null, new X509TrustManager[]{new X509TrustManager() {
-                @Override
-                public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-                    //BYEEEEEEEE
-                }
-
-                @Override
-                public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
-                    //NOPE
-                }
-
-                @Override
-                public X509Certificate[] getAcceptedIssuers() {
-                    //NO SECURITY FOR YUUUUUUUUUUUU
-                    return null;
-                }
-            }}, new SecureRandom());
-
-            HttpsURLConnection.setDefaultSSLSocketFactory(context.getSocketFactory());
-
             InputStream in = new BufferedInputStream(connection.getInputStream());
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(in));
 
-            String line = "";
+            String line;
             while ((line = bufferedReader.readLine()) != null) {
                 result += line;
             }
@@ -75,7 +36,7 @@ public class ElementUtils {
             connection.disconnect();
 
             return Jsoup.parse(result);
-        } catch (IOException | NoSuchAlgorithmException | KeyManagementException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
